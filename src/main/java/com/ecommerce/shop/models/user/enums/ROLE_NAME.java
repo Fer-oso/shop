@@ -1,6 +1,6 @@
 package com.ecommerce.shop.models.user.enums;
 
-public enum ROLES {
+public enum ROLE_NAME {
     ADMIN,
     USER,
     INVITED,

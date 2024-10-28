@@ -2,7 +2,7 @@ package com.ecommerce.shop.models.user;
 
 import java.util.Set;
 
-import com.ecommerce.shop.models.user.enums.ROLES;
+import com.ecommerce.shop.models.user.enums.ROLE_NAME;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +31,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -38,9 +40,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_name")
+    @Column(name = "role_name",unique = true)
     @Enumerated(EnumType.STRING)
-    private ROLES roles;
+    private ROLE_NAME roleName;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name="role_permissions", joinColumns = @JoinColumn(name="role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
