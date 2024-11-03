@@ -5,4 +5,6 @@ public interface IObjectMapper<Entity, DTO> {
     Entity mapDTOToEntity(DTO dto);
 
     DTO mapEntityToDTO(Entity entity);
+
+    void updateEntityFromDTO(DTO dto, Entity entity);
 }

@@ -1,4 +1,4 @@
-package com.ecommerce.shop.repository.users;
+package com.ecommerce.shop.repository.users.permissions;
 
 import java.util.List;
 

@@ -1,58 +1,110 @@
 package com.ecommerce.shop.services.users;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.shop.models.DTO.RoleDTO;
+import com.ecommerce.shop.models.DTO.UserDTO;
+import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.models.user.Role;
 import com.ecommerce.shop.models.user.User;
 import com.ecommerce.shop.models.user.enums.ROLE_NAME;
-import com.ecommerce.shop.repository.users.RoleRepository;
 import com.ecommerce.shop.repository.users.UserRepository;
+import com.ecommerce.shop.services.users.exceptions.DataBaseAccessException;
+import com.ecommerce.shop.services.users.exceptions.DuplicateUsernameException;
+import com.ecommerce.shop.services.users.exceptions.NoUsersFoundException;
+import com.ecommerce.shop.services.users.exceptions.NullUserRequestException;
+import com.ecommerce.shop.services.users.exceptions.RoleNotFoundException;
+import com.ecommerce.shop.services.users.roles.IRoleService;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class UserServiceImp implements IUserService, UserDetailsService {
 
     UserRepository userRepository;
-    RoleRepository roleRepository;
+    IRoleService roleService;
 
-    public UserServiceImp(UserRepository userRepository, RoleRepository roleRepository) {
+    PasswordEncoder passwordEncoder;
+
+    UserMapper userMapper;
+
+    public UserServiceImp(UserRepository userRepository,
+            IRoleService roleService,
+            PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     @Override
-    public User save(User user) {
+    public UserDTO save(UserDTO userDTO) {
 
-        if (!user.getRoles().isEmpty()) {
+        return Optional.of(userDTO)
+                .map(dtoUser -> {
 
-            Set<ROLE_NAME> rolesnameList = Set
-                    .copyOf(user.getRoles().stream().map(rolename -> rolename.getRoleName()).toList());
+                    Set<Role> roleList = checkAndSetRoleList(dtoUser); // obtengo la lista de roles
 
-            Set<Role> roleList = new HashSet<>(roleRepository.findAllByRoleNameIn(rolesnameList));
+                    dtoUser.setRoles(
+                            roleList.stream().map(role -> new RoleDTO(role.getRoleName())).collect(Collectors.toSet()));
+                    // seteo a el dto los roles obtenidos y los parseo a un RoleDTO en ese momento.
+                    dtoUser.setPassword(passwordEncoder.encode(dtoUser.getPassword()));
 
-            user.setRoles(roleList);
+                    User user = userMapper.mapDTOToEntity(dtoUser);
+
+                    user.setRoles(roleList);
+
+                    try {
+
+                        return userMapper.mapEntityToDTO(userRepository.save(user));
+
+                    } catch (Exception e) {
+
+                        throw new DuplicateUsernameException(
+                                "Username " + dtoUser.getUsername() + " is already in use.");
+                    }
+                })
+                .orElseThrow(() -> new NullUserRequestException("User cant be null"));
+    }
+
+    private Set<Role> checkAndSetRoleList(UserDTO userDTO) {
+
+        if (userDTO.getRoles().isEmpty()) {
+            throw new RoleNotFoundException("Role/s not found");
         }
 
-        return userRepository.saveAndFlush(user);
+        Set<ROLE_NAME> rolesnameList = Set
+                .copyOf(userDTO.getRoles().stream().map(rolename -> rolename.getRoleName()).toList());
+
+        Set<Role> roleList = roleService.findAllByRoleNameIn(rolesnameList);
+
+        return roleList;
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.findById(id).get();
+    public UserDTO findById(Long id) {
+        return userRepository.findById(id).map(user -> userMapper.mapEntityToDTO(user))
+                .orElseThrow(() -> new EntityNotFoundException("NOT FOUND WITH THAT ID"));
     }
 
     @Override
-    public User update(User t, Long id) {
+    public UserDTO update(UserDTO userDTO, Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
@@ -64,9 +116,23 @@ public class UserServiceImp implements IUserService, UserDetailsService {
     }
 
     @Override
-    public List<User> findAll() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<UserDTO> findAll() {
+
+        try {
+            
+            var userList = userRepository.findAll();
+
+            if(userList.isEmpty()) {
+                
+                throw new NoUsersFoundException("No users in database");
+            }
+            
+            return userList.stream().map(user -> userMapper.mapEntityToDTO(user)).toList();
+
+        } catch (DataAccessException e) {
+
+            throw new DataBaseAccessException("Error accessing the database "+e.getMessage(), e);
+        }
     }
 
     @Override

@@ -3,8 +3,6 @@ package com.ecommerce.shop.configurations.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.http.HttpMethod;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,10 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.ecommerce.shop.services.users.UserServiceImp;
 
@@ -34,7 +35,7 @@ public class SecurityConfig {
 
         httpSecurity.csrf(csrf -> csrf.disable());
 
-        httpSecurity.cors(cors -> cors.disable());
+        httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         httpSecurity.httpBasic(Customizer.withDefaults());
 
@@ -75,6 +76,20 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
 
-        return  NoOpPasswordEncoder.getInstance();
+        return  new BCryptPasswordEncoder();
+    }
+
+    @Bean
+      CorsConfigurationSource corsConfigurationSource() {
+        
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173/");
+        configuration.addAllowedMethod("*"); // Permitir todos los métodos
+        configuration.addAllowedHeader("*"); // Permitir todos los headers
+        configuration.setAllowCredentials(true);
+    
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

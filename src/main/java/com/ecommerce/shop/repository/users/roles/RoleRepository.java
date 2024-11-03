@@ -1,4 +1,4 @@
-package com.ecommerce.shop.repository.users;
+package com.ecommerce.shop.repository.users.roles;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +15,5 @@ public interface RoleRepository extends JpaRepository<Role,Long>{
 
  Optional<Role> findByRoleName(ROLE_NAME roleName);
 
- List<Role> findAllByRoleNameIn(Set<ROLE_NAME> rolenames);
+ Set<Role> findAllByRoleNameIn(Set<ROLE_NAME> rolenames);
 }
