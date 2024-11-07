@@ -61,15 +61,50 @@ public class ProductServiceImp implements IProductService {
     public void deleteById(Long id) {
 
         productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id " + id));
-
-        productRepository.deleteById(id);
+                .ifPresentOrElse(product -> productRepository.deleteById(id),
+                        () -> new EntityNotFoundException("Product not found with id " + id));
     }
 
     @Override
     public List<ProductDTO> findAll() {
 
         return productRepository.findAll().stream().map(product -> productMapper.mapEntityToDTO(product)).toList();
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByName(String name) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductsByName'");
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByCategory(String category) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductsByCategory'");
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByBrand(String brand) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductsByBrand'");
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByBrandAndName(String brand, String name) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductsByBrandAndName'");
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByCategoryAndBrand(String category, String brand) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findProductsByCategoryAndBrand'");
+    }
+
+    @Override
+    public Long countProductsByBrandAndName(String brand, String name) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'countProductsByBrandAndName'");
     }
 
 }
