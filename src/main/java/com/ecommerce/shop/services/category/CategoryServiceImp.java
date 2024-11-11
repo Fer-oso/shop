@@ -9,9 +9,9 @@ import com.ecommerce.shop.models.DTO.CategoryDTO;
 import com.ecommerce.shop.models.category.Category;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.repository.category.CategoryRepository;
+import com.ecommerce.shop.services.category.exceptions.CategoriesNotFoundException;
 import com.ecommerce.shop.services.category.exceptions.CategoryNotFoundException;
 import com.ecommerce.shop.services.category.exceptions.DuplicateCategoryException;
-import com.ecommerce.shop.services.category.exceptions.NullCategoryRequestException;
 
 import jakarta.transaction.Transactional;
 
@@ -31,19 +31,10 @@ public class CategoryServiceImp implements ICategoryService {
     @Override
     public CategoryDTO save(CategoryDTO categoryDTO) {
 
-        return Optional.ofNullable(categoryDTO).map(dto -> {
-
-            try {
-
-                return categoryRepository.saveAndFlush(categoryMapper.mapDTOToEntity(dto));
-
-            } catch (Exception e) {
-
-              throw new DuplicateCategoryException("Category duplicated, try with other name");
-            }
-        })
-        .map(category -> categoryMapper.mapEntityToDTO(category))
-        .orElseThrow(() -> new NullCategoryRequestException("Category cant be null"));
+        return Optional.of(categoryDTO).filter( category -> !categoryRepository.existsByName(category.getName()))
+        .map(category -> {
+             return  categoryMapper.mapEntityToDTO(categoryRepository.saveAndFlush(categoryMapper.mapDTOToEntity(category)));
+        }).orElseThrow(()-> new DuplicateCategoryException("Category already exists"));
     }
 
     @Override
@@ -71,8 +62,13 @@ public class CategoryServiceImp implements ICategoryService {
 
     @Override
     public List<CategoryDTO> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+       List<Category> categoriesList = categoryRepository.findAll();
+
+       if (categoriesList.size() == 0) {
+        throw new CategoriesNotFoundException("No categories created");
+       }
+
+       return categoriesList.stream().map(category -> categoryMapper.mapEntityToDTO(category)).toList();
     }
 
     @Override
@@ -86,4 +82,6 @@ public class CategoryServiceImp implements ICategoryService {
         return categoryRepository.findByName(name)
                 .orElseThrow(() -> new CategoryNotFoundException("Category nont exists with the name: " + name));
     }
+
+    
 }

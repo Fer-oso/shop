@@ -58,7 +58,7 @@ public class Product {
     private String code;
 
     @ManyToOne()
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id",nullable = false)
     private Category category;
 
     //if the product is deleted images be deleted along

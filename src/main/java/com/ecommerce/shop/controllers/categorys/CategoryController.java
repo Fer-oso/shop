@@ -15,7 +15,7 @@ import com.ecommerce.shop.services.category.ICategoryService;
 @RestController
 @RequestMapping("/api/shop/category")
 public class CategoryController {
-    
+
     ICategoryService categoryService;
 
     public CategoryController(ICategoryService categoryService) {
@@ -23,18 +23,25 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO){
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(categoryDTO));
     }
 
+    @GetMapping
+    public ResponseEntity<?> findAll(){
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> findCategoryById(@PathVariable Long id){
+    public ResponseEntity<CategoryDTO> findCategoryById(@PathVariable Long id) {
+
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.findById(id));
     }
-    
+
     @GetMapping("/categories/{name}")
-    public ResponseEntity<CategoryDTO> findCategoryByName(@PathVariable String name){
+    public ResponseEntity<CategoryDTO> findCategoryByName(@PathVariable String name) {
+        
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.findByName(name));
     }
 }

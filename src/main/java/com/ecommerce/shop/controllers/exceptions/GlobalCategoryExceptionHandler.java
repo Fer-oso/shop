@@ -8,36 +8,66 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.ecommerce.shop.controllers.response.ResponseModel;
+import com.ecommerce.shop.services.category.exceptions.CategoriesNotFoundException;
 import com.ecommerce.shop.services.category.exceptions.CategoryNotFoundException;
+import com.ecommerce.shop.services.category.exceptions.DuplicateCategoryException;
 import com.ecommerce.shop.services.category.exceptions.NullCategoryRequestException;
 
 @ControllerAdvice
 public class GlobalCategoryExceptionHandler {
-    
-    
+
     @ExceptionHandler(NullCategoryRequestException.class)
-    public ResponseEntity<?> handleNullCategoryRequestException(NullCategoryRequestException nullCategoryRequestException){
+    public ResponseEntity<?> handleNullCategoryRequestException(
+            NullCategoryRequestException nullCategoryRequestException) {
 
         ResponseModel response = ResponseModel.builder()
-        .code("400")
-        .status("BAD REQUEST")
-        .message(nullCategoryRequestException.getMessage())
-        .timestamp( LocalDateTime.now())
-        .build();
-        
+                .status("BAD REQUEST")
+                .code("400")
+                .message(nullCategoryRequestException.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<?> handleCategoryNotFoundException(CategoryNotFoundException categoryNotFoundException){
+    public ResponseEntity<?> handleCategoryNotFoundException(CategoryNotFoundException categoryNotFoundException) {
 
         ResponseModel response = ResponseModel.builder()
-        .code("404")
-        .status("NOT FOUND")
-        .message(categoryNotFoundException.getMessage())
-        .timestamp(LocalDateTime.now())
-        .build();
-        
+                .status("NOT FOUND")
+                .code("404")
+
+                .message(categoryNotFoundException.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(DuplicateCategoryException.class)
+    public ResponseEntity<?> handleDuplicateCategoryException(DuplicateCategoryException duplicateCategoryException){
+
+        ResponseModel response = ResponseModel.builder()
+        .status("CONFLICT")
+        .code("409")
+        .message(duplicateCategoryException.getMessage())
+        .timestamp(LocalDateTime.now())
+        .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(CategoriesNotFoundException.class)
+    public ResponseEntity<?> handleCategoriesNotFoundException(CategoriesNotFoundException categoriesNotFoundException){
+
+        ResponseModel response = ResponseModel.builder()
+        .status("404")
+        .code("NOT FOUND")
+        .message(categoriesNotFoundException.getMessage())
+        .timestamp(LocalDateTime.now())
+        .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
 }

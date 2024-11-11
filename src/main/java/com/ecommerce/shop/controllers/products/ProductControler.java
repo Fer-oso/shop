@@ -69,4 +69,10 @@ public class ProductControler {
     ResponseEntity<?> findProductsByCategoryName(@PathVariable String category) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByCategoryName(category));
     }
+
+    @GetMapping("/brand/{brand}/name/{name}")
+    ResponseEntity<?> findProductsByBrandAndName(@PathVariable String brand, @PathVariable String name){
+
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByBrandAndName(brand, name));
+    }
 }
