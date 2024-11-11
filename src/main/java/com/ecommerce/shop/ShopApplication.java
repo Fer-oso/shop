@@ -23,7 +23,7 @@ public class ShopApplication {
 	}
 
 	
-@Bean
+/*@Bean
 	  CommandLineRunner init(UserRepository userRepository) {
 	  return args -> {
 	  Permission createPermission = Permission.builder().name("CREATE").build();
@@ -58,6 +58,6 @@ public class ShopApplication {
 	  userRepository.saveAll(List.of(user, userAdmin));
 	  };
 	  }
-	  
-
+  
+*/
 }

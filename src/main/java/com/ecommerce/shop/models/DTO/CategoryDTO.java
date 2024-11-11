@@ -13,23 +13,10 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 @Builder
-public class ProductDTO {
 
-    private Long id;
+public class CategoryDTO {
+    
+    //private Long id;
 
     private String name;
-
-    private String brand;
-
-    private String description;
-
-    private double price;
-
-    private int stock;
-
-   // private boolean available;
-
-    private String code;
-
-    private CategoryDTO category;
 }

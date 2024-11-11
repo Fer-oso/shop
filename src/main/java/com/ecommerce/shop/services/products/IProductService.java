@@ -8,7 +8,7 @@ import com.ecommerce.shop.services.interfaces.ICrudService;
 public interface IProductService extends ICrudService<ProductDTO, Long> {
 
     List<ProductDTO> findProductsByName(String name);
-    List<ProductDTO> findProductsByCategory(String category);
+    List<ProductDTO> findProductsByCategoryName(String category);
     List<ProductDTO> findProductsByBrand(String brand);
 
     List<ProductDTO> findProductsByBrandAndName(String brand, String name);

@@ -45,7 +45,7 @@ public class RoleServiceImp implements IRoleService{
     }
 
     @Override
-    public void deleteById(Long id) {
+    public String deleteById(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }

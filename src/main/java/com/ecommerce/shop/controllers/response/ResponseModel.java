@@ -1,4 +1,4 @@
-package com.ecommerce.shop.controllers.users;
+package com.ecommerce.shop.controllers.response;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UserResponse {
+public class ResponseModel {
     
+    private String code;
+    private String status;
     private String message;
     private LocalDateTime timestamp;
-    private String status;
-    private String code;
 }

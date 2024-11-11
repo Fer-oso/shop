@@ -12,7 +12,7 @@ public class ProductMapper implements IObjectMapper<Product, ProductDTO> {
 
     public ProductMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-        this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+      //  this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
     }
 
     @Override

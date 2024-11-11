@@ -10,7 +10,7 @@ public interface ICrudService<T, ID> {
 
     T update(T t, ID id);
 
-    void deleteById(ID id);
+    String deleteById(ID id);
 
     List<T> findAll();
 }

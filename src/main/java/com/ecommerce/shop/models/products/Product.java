@@ -44,18 +44,20 @@ public class Product {
 
     private String brand;
 
+    @Column(length = 500)
     private String description;
 
     private BigDecimal price;
 
     private int stock;
 
-    private boolean available;
+    @Builder.Default
+    private boolean available = true;
 
     @Column(name = "product_code", nullable = false)
     private String code;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "category_id")
     private Category category;
 

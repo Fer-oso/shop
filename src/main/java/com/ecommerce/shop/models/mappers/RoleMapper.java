@@ -4,9 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
 import com.ecommerce.shop.models.DTO.RoleDTO;
-import com.ecommerce.shop.models.DTO.UserDTO;
 import com.ecommerce.shop.models.user.Role;
-import com.ecommerce.shop.models.user.User;
+
 
 public class RoleMapper implements IObjectMapper<Role,RoleDTO>{
 

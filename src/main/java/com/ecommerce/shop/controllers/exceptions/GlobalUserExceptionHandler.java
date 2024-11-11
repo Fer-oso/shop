@@ -8,12 +8,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ecommerce.shop.controllers.users.UserResponse;
+import com.ecommerce.shop.controllers.response.ResponseModel;
 import com.ecommerce.shop.services.users.exceptions.DuplicateUsernameException;
 import com.ecommerce.shop.services.users.exceptions.NoUsersFoundException;
 import com.ecommerce.shop.services.users.exceptions.NullUserRequestException;
-
-import jakarta.persistence.EntityNotFoundException;
+import com.ecommerce.shop.services.users.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class GlobalUserExceptionHandler {
@@ -21,7 +20,7 @@ public class GlobalUserExceptionHandler {
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<?> handleDuplicateUsername(DuplicateUsernameException duplicateUsernameException){
 
-        UserResponse response = UserResponse.builder()
+        ResponseModel response = ResponseModel.builder()
                 .code("409")
                 .status("CONFLICT")
                 .message(duplicateUsernameException.getMessage())
@@ -32,9 +31,9 @@ public class GlobalUserExceptionHandler {
     }
 
     @ExceptionHandler(NullUserRequestException.class)
-    public ResponseEntity<?> handleNullRequest(NullUserRequestException nullUserRequestException){
+    public ResponseEntity<?> handleNullUserRequestException(NullUserRequestException nullUserRequestException){
        
-        UserResponse response = UserResponse.builder()
+        ResponseModel response = ResponseModel.builder()
         .code("400")
         .status("BAD REQUEST")
         .message("User cant be null")
@@ -44,25 +43,13 @@ public class GlobalUserExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<?> handleNullRequestBody(HttpMessageNotReadableException httpMessageNotReadableException) {
 
-        UserResponse response = UserResponse.builder()
-                .code("400")
-                .status("BAD REQUEST")
-                .message("User cant be null")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException entityNotFoundException){
-        UserResponse response = UserResponse.builder()
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException userNotFoundException){
+        ResponseModel response = ResponseModel.builder()
         .code("404")
         .status("NOT FOUND")
-        .message(entityNotFoundException.getMessage())
+        .message(userNotFoundException.getMessage())
         .timestamp(LocalDateTime.now())
         .build();
 
@@ -72,7 +59,7 @@ public class GlobalUserExceptionHandler {
     @ExceptionHandler(NoUsersFoundException.class)
     public ResponseEntity<?> handleNoUsersFound(NoUsersFoundException noUsersFoundException){
        
-        UserResponse response = UserResponse.builder()
+        ResponseModel response = ResponseModel.builder()
         .code("404")
         .status("NOt FOUND")
         .message(noUsersFoundException.getMessage())

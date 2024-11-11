@@ -15,7 +15,7 @@ import com.ecommerce.shop.models.DTO.ProductDTO;
 import com.ecommerce.shop.services.products.IProductService;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/shop/products")
 public class ProductControler {
 
     IProductService productService;
@@ -24,69 +24,49 @@ public class ProductControler {
         this.productService = productService;
     }
 
-    @PostMapping()
+    @PostMapping
     ResponseEntity<?> createProduct(@RequestBody ProductDTO productDTO) {
 
-        try {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productDTO));
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productDTO));
-
-        } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
     }
 
     @PutMapping("/{id}")
     ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id) {
 
-        try {
-
-            return ResponseEntity.status(HttpStatus.OK).body(productService.update(productDTO, id));
-
-        } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(productService.update(productDTO, id));
     }
 
     @GetMapping("/{id}")
     ResponseEntity<?> findProductById(@PathVariable Long id) {
 
-        try {
-            return ResponseEntity.status(HttpStatus.FOUND).body(productService.findById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
+    }
+    
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteById(@PathVariable Long id) {
 
-        } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(productService.deleteById(id));
     }
 
     @GetMapping()
     ResponseEntity<?> findAllProducts() {
 
-        try {
-
-            return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
-
-        } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No products found");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
     }
 
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteById(@PathVariable Long id) {
+    @GetMapping("/names/{name}")
+    ResponseEntity<?> findProductsByName(@PathVariable String name){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByName(name));
+    }
 
-        try {
+    @GetMapping("/brand/{brand}")
+    ResponseEntity<?> findProductsByBrand(@PathVariable String brand){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByBrand(brand));
+    }
 
-            productService.deleteById(id);
-
-            return ResponseEntity.status(HttpStatus.OK).body("product with id " + id + "delete succesfully");
-
-        } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/categories/{category}")
+    ResponseEntity<?> findProductsByCategoryName(@PathVariable String category) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByCategoryName(category));
     }
 }

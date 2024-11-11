@@ -27,9 +27,9 @@ import com.ecommerce.shop.services.users.exceptions.DuplicateUsernameException;
 import com.ecommerce.shop.services.users.exceptions.NoUsersFoundException;
 import com.ecommerce.shop.services.users.exceptions.NullUserRequestException;
 import com.ecommerce.shop.services.users.exceptions.RoleNotFoundException;
+import com.ecommerce.shop.services.users.exceptions.UserNotFoundException;
 import com.ecommerce.shop.services.users.roles.IRoleService;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -58,16 +58,11 @@ public class UserServiceImp implements IUserService, UserDetailsService {
         return Optional.of(userDTO)
                 .map(dtoUser -> {
 
-                    Set<Role> roleList = checkAndSetRoleList(dtoUser); // obtengo la lista de roles
-
-                    dtoUser.setRoles(
-                            roleList.stream().map(role -> new RoleDTO(role.getRoleName())).collect(Collectors.toSet()));
-                    // seteo a el dto los roles obtenidos y los parseo a un RoleDTO en ese momento.
-                    dtoUser.setPassword(passwordEncoder.encode(dtoUser.getPassword()));
-
                     User user = userMapper.mapDTOToEntity(dtoUser);
 
-                    user.setRoles(roleList);
+                    user.setRoles(checkAndSetRoleList(dtoUser));
+
+                    user.setPassword(passwordEncoder.encode(dtoUser.getPassword()));
 
                     try {
 
@@ -99,7 +94,7 @@ public class UserServiceImp implements IUserService, UserDetailsService {
     @Override
     public UserDTO findById(Long id) {
         return userRepository.findById(id).map(user -> userMapper.mapEntityToDTO(user))
-                .orElseThrow(() -> new EntityNotFoundException("NOT FOUND WITH THAT ID"));
+                .orElseThrow(() -> new UserNotFoundException("USER NOT FOUND WITH THAT ID" + id));
     }
 
     @Override
@@ -109,7 +104,7 @@ public class UserServiceImp implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public String deleteById(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }

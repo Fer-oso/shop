@@ -7,10 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ecommerce.shop.models.DTO.ProductDTO;
+import com.ecommerce.shop.models.category.Category;
+import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
+import com.ecommerce.shop.models.products.Product;
 import com.ecommerce.shop.repository.products.ProductRepository;
 
-import jakarta.persistence.EntityNotFoundException;
+import com.ecommerce.shop.services.category.ICategoryService;
+import com.ecommerce.shop.services.products.exceptions.NullProductRequestException;
+import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 
 @Service
 @Transactional
@@ -18,35 +23,47 @@ public class ProductServiceImp implements IProductService {
 
     ProductRepository productRepository;
 
-    ProductMapper productMapper;
+    ICategoryService categoryService;
 
-    public ProductServiceImp(ProductRepository productRepository, ProductMapper productMapper) {
+    ProductMapper productMapper;
+    CategoryMapper categoryMapper;
+
+    public ProductServiceImp(ProductRepository productRepository, ICategoryService categoryService,
+            ProductMapper productMapper, CategoryMapper categoryMapper) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
         this.productMapper = productMapper;
+        this.categoryMapper = categoryMapper;
     }
 
     @Override
     public ProductDTO save(ProductDTO productDTO) {
 
-        return Optional.ofNullable(productDTO)
-                .map(dto -> productRepository.save(productMapper.mapDTOToEntity(dto)))
-                .map(product -> productMapper.mapEntityToDTO(product))
-                .orElseThrow(() -> new IllegalArgumentException("Product DTO canot be null"));
+             // check if the category recieved exists in DB and save if doesn´t
+             Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
+
+             Product product = productMapper.mapDTOToEntity(productDTO);
+
+             product.setCategory(category);
+
+             return productMapper.mapEntityToDTO(productRepository.save(product));
     }
 
     @Override
     public ProductDTO update(ProductDTO productDTO, Long id) {
 
-        return productRepository.findById(id)
+        return  productRepository.findById(id)
                 .map(product -> {
-                    productMapper.updateEntityFromDTO(productDTO, product);
+                
+                    Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
 
-                    product.setId(id);
+                    product.setCategory(category);
 
                     return productRepository.save(product);
                 })
                 .map(product -> productMapper.mapEntityToDTO(product))
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id"));
+
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: "+id));
     }
 
     @Override
@@ -54,57 +71,66 @@ public class ProductServiceImp implements IProductService {
 
         return productRepository.findById(id)
                 .map(product -> productMapper.mapEntityToDTO(product))
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with that id"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with that id: "+id));
     }
 
     @Override
-    public void deleteById(Long id) {
+    public String deleteById(Long id) {
 
-        productRepository.findById(id)
-                .ifPresentOrElse(product -> productRepository.deleteById(id),
-                        () -> new EntityNotFoundException("Product not found with id " + id));
+       return productRepository.findById(id).map(product -> {
+
+        productRepository.deleteById(id);
+
+        return "Product: " +product.getName()+ " deleted succesfully with id: "+id ;
+
+       }).orElseThrow(()-> new ProductNotFoundException("Product not found with that id: "+id));
     }
 
     @Override
     public List<ProductDTO> findAll() {
 
-        return productRepository.findAll().stream().map(product -> productMapper.mapEntityToDTO(product)).toList();
+        List<Product> productList = productRepository.findAll();
+        
+            if (productList.size() == 0) {
+                
+                throw new ProductNotFoundException("No products in database");
+            }
+
+            return productList.stream().map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 
     @Override
     public List<ProductDTO> findProductsByName(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findProductsByName'");
+        return findAll().stream().filter(product -> product.getName().toLowerCase().contains(name)).toList();
     }
 
     @Override
-    public List<ProductDTO> findProductsByCategory(String category) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findProductsByCategory'");
+    public List<ProductDTO> findProductsByCategoryName(String category) {
+        return productRepository.findProductsByCategoryName(category).stream()
+                .map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 
     @Override
     public List<ProductDTO> findProductsByBrand(String brand) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findProductsByBrand'");
+        return productRepository.findProductsByBrand(brand).stream()
+                .map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 
     @Override
     public List<ProductDTO> findProductsByBrandAndName(String brand, String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findProductsByBrandAndName'");
+        return productRepository.findProductsByBrandAndName(brand, name).stream()
+                .map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 
     @Override
     public List<ProductDTO> findProductsByCategoryAndBrand(String category, String brand) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findProductsByCategoryAndBrand'");
+        return productRepository.findProductsByCategoryNameAndBrand(category, brand).stream()
+                .map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'countProductsByBrandAndName'");
+        return productRepository.countProductsByBrandAndName(brand, name);
     }
 
 }
