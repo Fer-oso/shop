@@ -1,21 +1,28 @@
 package com.ecommerce.shop.controllers.products;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
 import com.ecommerce.shop.models.DTO.ProductDTO;
 import com.ecommerce.shop.services.products.IProductService;
 
 @RestController
-@RequestMapping("/api/shop/products")
+@RequestMapping("${api.prefix}/products")
 public class ProductControler {
 
     IProductService productService;
@@ -24,29 +31,54 @@ public class ProductControler {
         this.productService = productService;
     }
 
-    @PostMapping
-    ResponseEntity<?> createProduct(@RequestBody ProductDTO productDTO) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<ResponseSuccessModel> createProduct(@RequestPart("product") ProductDTO productDTO,
+            @RequestPart("image") List<MultipartFile> images) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productDTO));
-
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(ResponseSuccessModel.builder()
+                    .status("CREATED")
+                    .code("201")
+                    .response(productService.save(productDTO, images))
+                    .timestamp(LocalDateTime.now())
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long id) {
+    ResponseEntity<ResponseSuccessModel> updateProduct(@RequestPart("product") ProductDTO productDTO,
+            @RequestPart("image") List<MultipartFile> images, @PathVariable Long productId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(productService.update(productDTO, id));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(productService.update(productDTO, images, productId))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<?> findProductById(@PathVariable Long id) {
+    ResponseEntity<ResponseSuccessModel> findProductById(@PathVariable Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(productService.findById(id))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
-    
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteById(@PathVariable Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(productService.deleteById(id));
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResponseSuccessModel> deleteById(@PathVariable Long id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(productService.deleteById(id))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     @GetMapping()
@@ -55,23 +87,28 @@ public class ProductControler {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
     }
 
-    @GetMapping("/names/{name}")
-    ResponseEntity<?> findProductsByName(@PathVariable String name){
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByName(name));
+    @GetMapping("/names")
+    ResponseEntity<ResponseSuccessModel> findProductsByName(@RequestParam String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(productService.findProductsByName(name))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
-    @GetMapping("/brand/{brand}")
-    ResponseEntity<?> findProductsByBrand(@PathVariable String brand){
+    @GetMapping("/brand")
+    ResponseEntity<?> findProductsByBrand(@PathVariable String brand) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByBrand(brand));
     }
 
-    @GetMapping("/categories/{category}")
+    @GetMapping("/categories")
     ResponseEntity<?> findProductsByCategoryName(@PathVariable String category) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByCategoryName(category));
     }
 
     @GetMapping("/brand/{brand}/name/{name}")
-    ResponseEntity<?> findProductsByBrandAndName(@PathVariable String brand, @PathVariable String name){
+    ResponseEntity<?> findProductsByBrandAndName(@PathVariable String brand, @PathVariable String name) {
 
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByBrandAndName(brand, name));
     }

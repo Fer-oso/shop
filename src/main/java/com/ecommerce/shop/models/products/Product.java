@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -39,7 +40,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_name",nullable = false)
+    @Column(name = "product_name", nullable = false)
     private String name;
 
     private String brand;
@@ -57,11 +58,14 @@ public class Product {
     @Column(name = "product_code", nullable = false)
     private String code;
 
-    @ManyToOne()
-    @JoinColumn(name = "category_id",nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    //if the product is deleted images be deleted along
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,orphanRemoval = true)
+    // if the product is deleted images be deleted along
+    // @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    @OneToMany
+    @JoinTable(name = "product_image", joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<Image> images;
 }

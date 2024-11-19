@@ -1,7 +1,6 @@
 package com.ecommerce.shop.models.mappers;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 
 import com.ecommerce.shop.models.DTO.ProductDTO;
 import com.ecommerce.shop.models.products.Product;
@@ -12,7 +11,6 @@ public class ProductMapper implements IObjectMapper<Product, ProductDTO> {
 
     public ProductMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-      //  this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
     }
 
     @Override

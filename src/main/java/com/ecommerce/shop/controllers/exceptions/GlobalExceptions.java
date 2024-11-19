@@ -8,7 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ecommerce.shop.controllers.response.ResponseModel;
+import com.ecommerce.shop.controllers.responsesModels.ResponseErrosModel;
 
 @ControllerAdvice
 public class GlobalExceptions {
@@ -16,9 +16,9 @@ public class GlobalExceptions {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleNullRequestBody(HttpMessageNotReadableException httpMessageNotReadableException) {
 
-        ResponseModel response = ResponseModel.builder()
-                .code("400")
+        ResponseErrosModel response = ResponseErrosModel.builder()
                 .status("BAD REQUEST")
+                .code("400")
                 .message(httpMessageNotReadableException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

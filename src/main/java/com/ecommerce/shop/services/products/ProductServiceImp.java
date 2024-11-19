@@ -5,17 +5,20 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.shop.models.DTO.ProductDTO;
 import com.ecommerce.shop.models.category.Category;
+import com.ecommerce.shop.models.image.Image;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
 import com.ecommerce.shop.models.products.Product;
 import com.ecommerce.shop.repository.products.ProductRepository;
 
 import com.ecommerce.shop.services.category.ICategoryService;
+import com.ecommerce.shop.services.images.IImageService;
+import com.ecommerce.shop.services.images.ImageServiceImp;
 import com.ecommerce.shop.services.products.exceptions.NoProductsFoundException;
-import com.ecommerce.shop.services.products.exceptions.NullProductRequestException;
 import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 
 @Service
@@ -26,19 +29,22 @@ public class ProductServiceImp implements IProductService {
 
     ICategoryService categoryService;
 
+    ImageServiceImp imageService;
+
     ProductMapper productMapper;
     CategoryMapper categoryMapper;
 
     public ProductServiceImp(ProductRepository productRepository, ICategoryService categoryService,
-            ProductMapper productMapper, CategoryMapper categoryMapper) {
+            ProductMapper productMapper, CategoryMapper categoryMapper, ImageServiceImp imageService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.productMapper = productMapper;
         this.categoryMapper = categoryMapper;
+        this.imageService = imageService;
     }
 
     @Override
-    public ProductDTO save(ProductDTO productDTO) {
+    public ProductDTO save(ProductDTO productDTO, List<MultipartFile> filesImage) {
 
         return Optional.of(productDTO).map(dto -> {
 
@@ -48,16 +54,22 @@ public class ProductServiceImp implements IProductService {
 
             product.setCategory(category);
 
-            return productMapper.mapEntityToDTO(productRepository.save(product));
+            product = productRepository.save(product);
+
+            List<Image> images = imageService.saveImage(filesImage);
+
+            product.setImages(images);
+
+            return productMapper.mapEntityToDTO(product);
 
         }).orElseThrow(() -> new NullPointerException("Product cant be null properties"));
 
     }
 
     @Override
-    public ProductDTO update(ProductDTO productDTO, Long id) {
+    public ProductDTO update(ProductDTO productDTO, List<MultipartFile> files, Long productId) {
 
-        return productRepository.findById(id)
+        return productRepository.findById(productId)
                 .map(product -> {
 
                     Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
@@ -68,7 +80,7 @@ public class ProductServiceImp implements IProductService {
                 })
                 .map(product -> productMapper.mapEntityToDTO(product))
 
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
 
     @Override
@@ -106,7 +118,10 @@ public class ProductServiceImp implements IProductService {
 
     @Override
     public List<ProductDTO> findProductsByName(String name) {
-        return findAll().stream().filter(product -> product.getName().toLowerCase().contains(name)).toList();
+
+        return productRepository.findProductsByName(name).stream()
+                .map(product -> productMapper.mapEntityToDTO(product))
+                .toList();
     }
 
     @Override

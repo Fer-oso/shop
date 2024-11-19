@@ -1,5 +1,7 @@
 package com.ecommerce.shop.models.DTO;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -27,9 +29,11 @@ public class ProductDTO {
 
     private int stock;
 
-   // private boolean available;
+    private boolean available;
 
     private String code;
 
     private CategoryDTO category;
+
+    private List<ImageDTO> images;
 }
