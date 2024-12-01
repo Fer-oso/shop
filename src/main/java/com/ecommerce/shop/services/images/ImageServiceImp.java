@@ -19,10 +19,10 @@ import com.ecommerce.shop.models.DTO.ImageDTO;
 import com.ecommerce.shop.models.image.Image;
 import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
-import com.ecommerce.shop.models.products.Product;
+
 import com.ecommerce.shop.repository.images.ImageRepository;
 import com.ecommerce.shop.services.images.exceptions.ImageNotFoundException;
-import com.ecommerce.shop.services.products.IProductService;
+import com.ecommerce.shop.services.images.exceptions.ImageNotSelectedException;
 
 import jakarta.transaction.Transactional;
 
@@ -65,9 +65,13 @@ public class ImageServiceImp implements IImageService {
     }
 
     @Override
-    public List<ImageDTO> save(List<MultipartFile> fileImage) {
+    public List<ImageDTO> save(List<MultipartFile> filesImage) {
 
-        return fileImage.stream().map(file -> {
+        if (filesImage == null || filesImage.isEmpty()) {
+            return List.of();
+        }
+
+        return filesImage.stream().filter(file -> file != null).map(file -> {
 
             try {
 
@@ -116,9 +120,22 @@ public class ImageServiceImp implements IImageService {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
-    public List<Image> saveImage(List<MultipartFile> fileImage) {
-        return fileImage.stream().map(file -> {
+    public List<Image> saveImage(List<MultipartFile> filesImage) {
+
+        try {
+
+            if (filesImage == null || filesImage.isEmpty())
+            return List.of();
+
+            filesImage.get(0).getContentType().equals(null);
+           
+        } catch (Exception e) {
+            throw new ImageNotSelectedException("Select one archive");
+        }
+
+        return filesImage.stream().map(file -> {
 
             try {
 

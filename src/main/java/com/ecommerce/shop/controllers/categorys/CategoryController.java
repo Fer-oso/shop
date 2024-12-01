@@ -1,5 +1,7 @@
 package com.ecommerce.shop.controllers.categorys;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
 import com.ecommerce.shop.models.DTO.CategoryDTO;
 import com.ecommerce.shop.services.category.ICategoryService;
 
 @RestController
-@RequestMapping("/api/shop/category")
+@RequestMapping("${api.prefix}/category")
 public class CategoryController {
 
     ICategoryService categoryService;
@@ -29,8 +32,13 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAll(){
-        return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll());
+    public ResponseEntity<ResponseSuccessModel> findAll(){
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+        .status("OK")
+        .code("200")
+        .response(categoryService.findAll())
+        .timestamp(LocalDateTime.now())
+        .build());
     }
 
     @GetMapping("/{id}")

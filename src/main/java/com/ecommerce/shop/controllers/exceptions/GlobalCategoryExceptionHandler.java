@@ -2,17 +2,19 @@ package com.ecommerce.shop.controllers.exceptions;
 
 import java.time.LocalDateTime;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ecommerce.shop.controllers.responsesModels.ResponseErrosModel;
+import com.ecommerce.shop.controllers.responsesModels.ResponseErrorModel;
 import com.ecommerce.shop.services.category.exceptions.CategoriesNotFoundException;
 import com.ecommerce.shop.services.category.exceptions.CategoryNotFoundException;
 import com.ecommerce.shop.services.category.exceptions.DuplicateCategoryException;
 import com.ecommerce.shop.services.category.exceptions.NullCategoryRequestException;
 
+@Order(2)
 @ControllerAdvice
 public class GlobalCategoryExceptionHandler {
 
@@ -20,7 +22,7 @@ public class GlobalCategoryExceptionHandler {
     public ResponseEntity<?> handleNullCategoryRequestException(
             NullCategoryRequestException nullCategoryRequestException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("BAD REQUEST")
                 .code("400")
                 .message(nullCategoryRequestException.getMessage())
@@ -33,7 +35,7 @@ public class GlobalCategoryExceptionHandler {
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<?> handleCategoryNotFoundException(CategoryNotFoundException categoryNotFoundException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("NOT FOUND")
                 .code("404")
                 .message(categoryNotFoundException.getMessage())
@@ -46,7 +48,7 @@ public class GlobalCategoryExceptionHandler {
     @ExceptionHandler(DuplicateCategoryException.class)
     public ResponseEntity<?> handleDuplicateCategoryException(DuplicateCategoryException duplicateCategoryException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("CONFLICT")
                 .code("409")
                 .message(duplicateCategoryException.getMessage())
@@ -60,7 +62,7 @@ public class GlobalCategoryExceptionHandler {
     public ResponseEntity<?> handleCategoriesNotFoundException(
             CategoriesNotFoundException categoriesNotFoundException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("404")
                 .code("NOT FOUND")
                 .message(categoriesNotFoundException.getMessage())

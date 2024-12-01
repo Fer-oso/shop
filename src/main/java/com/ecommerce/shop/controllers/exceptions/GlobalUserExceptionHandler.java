@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ecommerce.shop.controllers.responsesModels.ResponseErrosModel;
+import com.ecommerce.shop.controllers.responsesModels.ResponseErrorModel;
 import com.ecommerce.shop.services.users.exceptions.DuplicateUsernameException;
 import com.ecommerce.shop.services.users.exceptions.NoUsersFoundException;
 import com.ecommerce.shop.services.users.exceptions.NullUserRequestException;
@@ -19,7 +19,7 @@ public class GlobalUserExceptionHandler {
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<?> handleDuplicateUsername(DuplicateUsernameException duplicateUsernameException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("CONFLICT")
                 .code("409")
                 .message(duplicateUsernameException.getMessage())
@@ -32,7 +32,7 @@ public class GlobalUserExceptionHandler {
     @ExceptionHandler(NullUserRequestException.class)
     public ResponseEntity<?> handleNullUserRequestException(NullUserRequestException nullUserRequestException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("BAD REQUEST")
                 .code("400")
                 .message("User cant be null")
@@ -44,7 +44,7 @@ public class GlobalUserExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException userNotFoundException) {
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("NOT FOUND")
                 .code("404")
                 .message(userNotFoundException.getMessage())
@@ -57,7 +57,7 @@ public class GlobalUserExceptionHandler {
     @ExceptionHandler(NoUsersFoundException.class)
     public ResponseEntity<?> handleNoUsersFound(NoUsersFoundException noUsersFoundException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("NOt FOUND")
                 .code("404")
                 .message(noUsersFoundException.getMessage())

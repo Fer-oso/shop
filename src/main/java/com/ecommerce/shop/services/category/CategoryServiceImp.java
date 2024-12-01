@@ -45,7 +45,7 @@ public class CategoryServiceImp implements ICategoryService {
     @Override
     public CategoryDTO findById(Long id) {
         return categoryRepository.findById(id).map(category -> categoryMapper.mapEntityToDTO(category))
-                .orElseThrow(() -> new CategoryNotFoundException("category dont exist whit the name: " + id));
+                .orElseThrow(() -> new CategoryNotFoundException("category dont exist whit the id: " + id));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CategoryServiceImp implements ICategoryService {
     @Override
     public Category findCategoryByName(String name) {
         return categoryRepository.findByName(name)
-                .orElseThrow(() -> new CategoryNotFoundException("Category nont exists with the name: " + name));
+                .orElseThrow(() -> new CategoryNotFoundException("Category dont exists with the name: " + name + ". First create the category"));
     }
 
     

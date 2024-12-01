@@ -33,28 +33,25 @@ public class ProductControler {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ResponseSuccessModel> createProduct(@RequestPart("product") ProductDTO productDTO,
-            @RequestPart("image") List<MultipartFile> images) {
+            @RequestParam(name ="image", required = false) List<MultipartFile> images) {
 
-        try {
             return ResponseEntity.status(HttpStatus.CREATED).body(ResponseSuccessModel.builder()
                     .status("CREATED")
                     .code("201")
                     .response(productService.save(productDTO, images))
                     .timestamp(LocalDateTime.now())
                     .build());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+       
     }
 
     @PutMapping("/{id}")
     ResponseEntity<ResponseSuccessModel> updateProduct(@RequestPart("product") ProductDTO productDTO,
-            @RequestPart("image") List<MultipartFile> images, @PathVariable Long productId) {
+            @RequestPart(name = "image", required = false) List<MultipartFile> images, @PathVariable Long id) {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
                 .status("OK")
                 .code("200")
-                .response(productService.update(productDTO, images, productId))
+                .response(productService.update(productDTO, images, id))
                 .timestamp(LocalDateTime.now())
                 .build());
     }
@@ -82,9 +79,14 @@ public class ProductControler {
     }
 
     @GetMapping()
-    ResponseEntity<?> findAllProducts() {
+    ResponseEntity<?> findAll() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+        .status("OK")
+        .code("200")
+        .response(productService.findAll())
+        .timestamp(LocalDateTime.now())
+        .build());
     }
 
     @GetMapping("/names")

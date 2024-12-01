@@ -6,7 +6,6 @@ import java.util.List;
 import com.ecommerce.shop.models.category.Category;
 import com.ecommerce.shop.models.image.Image;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,17 +42,20 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String name;
 
+    @Column(name = "brand", nullable = false)
     private String brand;
 
     @Column(length = 500)
     private String description;
 
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "stock", nullable = false)
     private int stock;
 
-    @Builder.Default
-    private boolean available = true;
+    @Column(name= "available")
+    private final boolean available = true;
 
     @Column(name = "product_code", nullable = false)
     private String code;
@@ -65,7 +67,7 @@ public class Product {
     // if the product is deleted images be deleted along
     // @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval =
     // true)
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     @JoinTable(name = "product_image", joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<Image> images;
 }

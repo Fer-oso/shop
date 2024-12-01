@@ -2,24 +2,26 @@ package com.ecommerce.shop.controllers.exceptions;
 
 import java.time.LocalDateTime;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ecommerce.shop.controllers.responsesModels.ResponseErrosModel;
-import com.ecommerce.shop.services.products.exceptions.NoProductsFoundException;
+import com.ecommerce.shop.controllers.responsesModels.ResponseErrorModel;
+import com.ecommerce.shop.services.products.exceptions.ProductsNotFoundException;
 import com.ecommerce.shop.services.products.exceptions.NullProductRequestException;
 import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 
+@Order(1)
 @ControllerAdvice
 public class GlobalProductExceptionHandler {
 
     @ExceptionHandler(NullProductRequestException.class)
-    public ResponseEntity<?> handleNullProductRequestException(
+    public ResponseEntity<ResponseErrorModel> handleNullProductRequestException(
             NullProductRequestException nullProductRequestException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("400")
                 .code("BAD REQUEST")
                 .message(nullProductRequestException.getMessage())
@@ -30,9 +32,9 @@ public class GlobalProductExceptionHandler {
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<?> handleProductNotFoundException(ProductNotFoundException productNotFoundException) {
+    public ResponseEntity<ResponseErrorModel> handleProductNotFoundException(ProductNotFoundException productNotFoundException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("404")
                 .code("NOT FOUND")
                 .message(productNotFoundException.getMessage())
@@ -42,13 +44,13 @@ public class GlobalProductExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @ExceptionHandler(NoProductsFoundException.class)
-    public ResponseEntity<?> handleNoProductsFoundException(NoProductsFoundException noProductsFoundException) {
+    @ExceptionHandler(ProductsNotFoundException.class)
+    public ResponseEntity<ResponseErrorModel> handleProductsNotFoundException(ProductsNotFoundException productsNotFoundException) {
 
-        ResponseErrosModel response = ResponseErrosModel.builder()
+        ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("404")
                 .code("NOT FOUND")
-                .message(noProductsFoundException.getMessage())
+                .message(productsNotFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
 

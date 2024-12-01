@@ -32,7 +32,7 @@ public class ImagesController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> saveImages(@RequestParam List<MultipartFile> files, @RequestParam Long productId) {
+    public ResponseEntity<?> saveImages(@RequestParam List<MultipartFile> files) {
 
         try {
             List<ImageDTO> imageDTOs = imageService.save(files);

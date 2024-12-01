@@ -17,8 +17,7 @@ import com.ecommerce.shop.repository.products.ProductRepository;
 
 import com.ecommerce.shop.services.category.ICategoryService;
 import com.ecommerce.shop.services.images.IImageService;
-import com.ecommerce.shop.services.images.ImageServiceImp;
-import com.ecommerce.shop.services.products.exceptions.NoProductsFoundException;
+import com.ecommerce.shop.services.products.exceptions.ProductsNotFoundException;
 import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 
 @Service
@@ -29,13 +28,13 @@ public class ProductServiceImp implements IProductService {
 
     ICategoryService categoryService;
 
-    ImageServiceImp imageService;
+    IImageService imageService;
 
     ProductMapper productMapper;
     CategoryMapper categoryMapper;
 
     public ProductServiceImp(ProductRepository productRepository, ICategoryService categoryService,
-            ProductMapper productMapper, CategoryMapper categoryMapper, ImageServiceImp imageService) {
+            ProductMapper productMapper, CategoryMapper categoryMapper, IImageService imageService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.productMapper = productMapper;
@@ -52,34 +51,36 @@ public class ProductServiceImp implements IProductService {
 
             Category category = categoryService.findCategoryByName(dto.getCategory().getName());
 
-            product.setCategory(category);
-
-            product = productRepository.save(product);
-
             List<Image> images = imageService.saveImage(filesImage);
+
+            product.setCategory(category);
 
             product.setImages(images);
 
-            return productMapper.mapEntityToDTO(product);
+            return productMapper.mapEntityToDTO(productRepository.save(product));
 
         }).orElseThrow(() -> new NullPointerException("Product cant be null properties"));
 
     }
 
     @Override
-    public ProductDTO update(ProductDTO productDTO, List<MultipartFile> files, Long productId) {
+    public ProductDTO update(ProductDTO productDTO, List<MultipartFile> filesImage, Long productId) {
 
         return productRepository.findById(productId)
                 .map(product -> {
 
+                    product = productMapper.mapDTOToEntity(productDTO);
+
                     Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
+
+                    List<Image> images = imageService.saveImage(filesImage);
 
                     product.setCategory(category);
 
-                    return productRepository.save(product);
-                })
-                .map(product -> productMapper.mapEntityToDTO(product))
+                    product.getImages().addAll(images);
 
+                    return  productMapper.mapEntityToDTO(productRepository.save(product));
+                })
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
 
@@ -110,7 +111,7 @@ public class ProductServiceImp implements IProductService {
 
         if (productList.size() == 0) {
 
-            throw new NoProductsFoundException("No products in database");
+            throw new ProductsNotFoundException("No products in database");
         }
 
         return productList.stream().map(product -> productMapper.mapEntityToDTO(product)).toList();
