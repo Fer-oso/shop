@@ -69,17 +69,27 @@ public class ProductServiceImp implements IProductService {
         return productRepository.findById(productId)
                 .map(product -> {
 
+                    System.out.println(product);
+
                     product = productMapper.mapDTOToEntity(productDTO);
 
-                    Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
+                    if (productDTO.getCategory() != null) {
+
+                        Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
+
+                        product.setCategory(category);
+                    }
+
+                    if (productDTO.getImages() == null) {
+
+                        product.setImages(productRepository.findById(productId).get().getImages());
+                    }
 
                     List<Image> images = imageService.saveImage(filesImage);
 
-                    product.setCategory(category);
-
                     product.getImages().addAll(images);
 
-                    return  productMapper.mapEntityToDTO(productRepository.save(product));
+                    return productMapper.mapEntityToDTO(productRepository.save(product));
                 })
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
@@ -109,7 +119,7 @@ public class ProductServiceImp implements IProductService {
 
         List<Product> productList = productRepository.findAll();
 
-        if (productList.size() == 0) {
+        if (productList.isEmpty()) {
 
             throw new ProductsNotFoundException("No products in database");
         }
@@ -120,20 +130,58 @@ public class ProductServiceImp implements IProductService {
     @Override
     public List<ProductDTO> findProductsByName(String name) {
 
-        return productRepository.findProductsByName(name).stream()
+        if ("__ALL__".equalsIgnoreCase(name)) {
+
+            return findAll();
+        }
+
+        List<Product> productList = productRepository.findProductsByName(name);
+
+        if (productList.isEmpty()) {
+
+            throw new ProductsNotFoundException("No products with the name " + name);
+        }
+
+        return productList.stream()
                 .map(product -> productMapper.mapEntityToDTO(product))
                 .toList();
     }
 
     @Override
     public List<ProductDTO> findProductsByBrand(String brand) {
-        return productRepository.findProductsByBrand(brand).stream()
+
+        if ("__ALL__".equalsIgnoreCase(brand)) {
+
+            return findAll();
+        }
+
+        List<Product> productList = productRepository.findProductsByBrand(brand);
+
+        if (productList.size() == 0) {
+
+            throw new ProductsNotFoundException("No products in database with that brand " + brand);
+        }
+
+        return productList.stream()
                 .map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 
     @Override
     public List<ProductDTO> findProductsByCategoryName(String category) {
-        return productRepository.findProductsByCategoryName(category).stream()
+
+        if ("__ALL__".equalsIgnoreCase(category)) {
+
+            return findAll();
+        }
+
+        List<Product> productList = productRepository.findProductsByCategoryName(category);
+
+        if (productList.size() == 0) {
+
+            throw new ProductsNotFoundException("No products in database with that Category");
+        }
+
+        return productList.stream()
                 .map(product -> productMapper.mapEntityToDTO(product)).toList();
     }
 

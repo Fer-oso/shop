@@ -33,15 +33,15 @@ public class ProductControler {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ResponseSuccessModel> createProduct(@RequestPart("product") ProductDTO productDTO,
-            @RequestParam(name ="image", required = false) List<MultipartFile> images) {
+            @RequestParam(name = "image", required = false) List<MultipartFile> images) {
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(ResponseSuccessModel.builder()
-                    .status("CREATED")
-                    .code("201")
-                    .response(productService.save(productDTO, images))
-                    .timestamp(LocalDateTime.now())
-                    .build());
-       
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseSuccessModel.builder()
+                .status("CREATED")
+                .code("201")
+                .response(productService.save(productDTO, images))
+                .timestamp(LocalDateTime.now())
+                .build());
+
     }
 
     @PutMapping("/{id}")
@@ -82,15 +82,16 @@ public class ProductControler {
     ResponseEntity<?> findAll() {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
-        .status("OK")
-        .code("200")
-        .response(productService.findAll())
-        .timestamp(LocalDateTime.now())
-        .build());
+                .status("OK")
+                .code("200")
+                .response(productService.findAll())
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     @GetMapping("/names")
-    ResponseEntity<ResponseSuccessModel> findProductsByName(@RequestParam String name) {
+    ResponseEntity<ResponseSuccessModel> findProductsByName(
+            @RequestParam(required = false, defaultValue = "__ALL__") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
                 .status("OK")
                 .code("200")
@@ -100,11 +101,17 @@ public class ProductControler {
     }
 
     @GetMapping("/brand")
-    ResponseEntity<?> findProductsByBrand(@PathVariable String brand) {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByBrand(brand));
+    ResponseEntity<ResponseSuccessModel> findProductsByBrand(
+            @RequestParam(required = false, defaultValue = "__ALL__") String brand) {
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(productService.findProductsByBrand(brand))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/categories/{category}")
     ResponseEntity<?> findProductsByCategoryName(@PathVariable String category) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByCategoryName(category));
     }

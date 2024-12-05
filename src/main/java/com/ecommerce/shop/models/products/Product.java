@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.ecommerce.shop.models.category.Category;
 import com.ecommerce.shop.models.image.Image;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,7 +38,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "brand", nullable = false)
@@ -54,10 +53,10 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private int stock;
 
-    @Column(name= "available")
+    @Column(name = "available")
     private final boolean available = true;
 
-    @Column(name = "product_code", nullable = false)
+    @Column(name = "code", nullable = false)
     private String code;
 
     @ManyToOne

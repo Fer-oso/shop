@@ -35,8 +35,9 @@ public class ImageServiceImp implements IImageService {
     ProductMapper productMapper;
     ImageMapper imageMapper;
 
-    private static final String URL_DOWNLOAD = "/api/shop/images/image/download/";
     private static final Path FOLDER_IMAGES = Paths.get("src//main//resources//public//img");
+
+    private static final String URL_DOWNLOAD = "/api/shop/images/image/download/";
 
     public ImageServiceImp(ImageRepository imageRepository,
             ImageMapper imageMapper,
@@ -68,6 +69,7 @@ public class ImageServiceImp implements IImageService {
     public List<ImageDTO> save(List<MultipartFile> filesImage) {
 
         if (filesImage == null || filesImage.isEmpty()) {
+
             return List.of();
         }
 
@@ -94,6 +96,7 @@ public class ImageServiceImp implements IImageService {
                 return imageMapper.mapEntityToDTO(savedImage);
 
             } catch (IOException | SQLException e) {
+
                 throw new RuntimeException(e.getMessage());
             }
         }).toList();
@@ -120,24 +123,21 @@ public class ImageServiceImp implements IImageService {
         }
     }
 
-    @SuppressWarnings("null")
     @Override
     public List<Image> saveImage(List<MultipartFile> filesImage) {
 
-        try {
+        checkIfFolderExists(FOLDER_IMAGES);
 
-            if (filesImage == null || filesImage.isEmpty())
+        if (filesImage == null || filesImage.isEmpty())
             return List.of();
-
-            filesImage.get(0).getContentType().equals(null);
-           
-        } catch (Exception e) {
-            throw new ImageNotSelectedException("Select one archive");
-        }
 
         return filesImage.stream().map(file -> {
 
             try {
+
+                if (file.getContentType() == null) {
+                    throw new ImageNotSelectedException("File content type is null. Select one archive");
+                }
 
                 Image image = Image.builder()
                         .fileName(uniqueFileName(file))
@@ -156,6 +156,7 @@ public class ImageServiceImp implements IImageService {
                 return imageRepository.save(savedImage);
 
             } catch (IOException | SQLException e) {
+
                 throw new RuntimeException(e.getMessage());
             }
         }).toList();
@@ -166,6 +167,7 @@ public class ImageServiceImp implements IImageService {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         if (fileName.contains("..")) {
+
             throw new RuntimeException(" file name contains invalid path sequence" + fileName);
         }
 
@@ -173,7 +175,31 @@ public class ImageServiceImp implements IImageService {
     }
 
     private void saveInFolderImages(MultipartFile file) throws IOException {
+
         String uniqueFileName = uniqueFileName(file);
+
         Files.copy(file.getInputStream(), FOLDER_IMAGES.resolve(uniqueFileName), StandardCopyOption.REPLACE_EXISTING);
     }
+
+    private void checkIfFolderExists(Path path) {
+
+        try {
+
+            if (Files.exists(path)) { // Verifica si el directorio existe.
+
+                System.out.println("El directorio ya existe: " + path.toAbsolutePath());
+
+            } else {
+
+                Files.createDirectories(path); // Crea el directorio si no existe.
+
+                System.out.println("Directorio creado: " + path.toAbsolutePath());
+            }
+
+        } catch (IOException e) {
+
+            System.err.println("Ocurrió un error al verificar o crear el directorio: " + e.getMessage());
+        }
+    }
+
 }
