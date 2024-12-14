@@ -31,9 +31,9 @@ public class ProductControler {
         this.productService = productService;
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ResponseSuccessModel> createProduct(@RequestPart("product") ProductDTO productDTO,
-            @RequestParam(name = "image", required = false) List<MultipartFile> images) {
+            @RequestPart(name = "image", required = false) List<MultipartFile> images) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseSuccessModel.builder()
                 .status("CREATED")
@@ -113,7 +113,12 @@ public class ProductControler {
 
     @GetMapping("/categories/{category}")
     ResponseEntity<?> findProductsByCategoryName(@PathVariable String category) {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductsByCategoryName(category));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(productService.findProductsByCategoryName(category))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     @GetMapping("/brand/{brand}/name/{name}")

@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "api.prefix",
-  "type": "java.lang.String",
-  "description": "Prefix used to set url API'"
-}]}
+{"properties": [
+  {
+    "name": "api.prefix",
+    "type": "java.lang.String",
+    "description": "Prefix used to set url API'"
+  },
+  {
+    "name": "folder.path",
+    "type": "java.lang.String",
+    "description": "path to save and load images'"
+  }
+]}

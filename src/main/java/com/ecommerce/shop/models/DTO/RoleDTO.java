@@ -1,8 +1,5 @@
 package com.ecommerce.shop.models.DTO;
 
-import java.util.Set;
-
-import com.ecommerce.shop.models.user.Permission;
 import com.ecommerce.shop.models.user.enums.ROLE_NAME;
 
 import jakarta.persistence.EnumType;

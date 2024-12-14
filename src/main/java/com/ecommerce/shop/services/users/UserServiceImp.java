@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
 
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.shop.models.DTO.RoleDTO;
 import com.ecommerce.shop.models.DTO.UserDTO;
 import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.models.user.Role;
@@ -144,9 +142,13 @@ public class UserServiceImp implements IUserService, UserDetailsService {
                 .flatMap(role -> role.getPermissions().stream())
                 .forEach(permission -> listAuthorities.add(new SimpleGrantedAuthority(permission.getName())));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+        user.setAuthorities(listAuthorities);
+
+        return user;
+
+        /*return new User(user.getUsername(), user.getPassword(),
                 user.isEnabled(), user.isAccountNonExpired(), user.isCredentialsNonExpired(), user.isAccountNonLocked(),
-                listAuthorities);
+                listAuthorities); */
     }
 
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.shop.models.DTO;
 
+import java.util.List;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -27,4 +28,5 @@ public class UserDTO {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private Set<RoleDTO> roles;
+    private List<ImageDTO> profileImages;
 }

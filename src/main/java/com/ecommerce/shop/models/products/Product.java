@@ -15,6 +15,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -47,6 +48,7 @@ public class Product {
     @Column(length = 500)
     private String description;
 
+    @Min(1)
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 

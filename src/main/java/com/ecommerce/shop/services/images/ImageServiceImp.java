@@ -1,18 +1,11 @@
 package com.ecommerce.shop.services.images;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
-
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.shop.models.DTO.ImageDTO;
@@ -21,6 +14,7 @@ import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
 
 import com.ecommerce.shop.repository.images.ImageRepository;
+import com.ecommerce.shop.services.files.FileService;
 import com.ecommerce.shop.services.images.exceptions.ImageNotFoundException;
 import com.ecommerce.shop.services.images.exceptions.ImageNotSelectedException;
 
@@ -35,16 +29,17 @@ public class ImageServiceImp implements IImageService {
     ProductMapper productMapper;
     ImageMapper imageMapper;
 
-    private static final Path FOLDER_IMAGES = Paths.get("src//main//resources//public//img");
+    FileService fileService;
 
     private static final String URL_DOWNLOAD = "/api/shop/images/image/download/";
 
     public ImageServiceImp(ImageRepository imageRepository,
             ImageMapper imageMapper,
-            ProductMapper productMapper) {
+            ProductMapper productMapper, FileService fileService) {
         this.imageRepository = imageRepository;
         this.imageMapper = imageMapper;
         this.productMapper = productMapper;
+        this.fileService = fileService;
     }
 
     @Override
@@ -68,6 +63,8 @@ public class ImageServiceImp implements IImageService {
     @Override
     public List<ImageDTO> save(List<MultipartFile> filesImage) {
 
+        fileService.checkIfFolderExists();
+
         if (filesImage == null || filesImage.isEmpty()) {
 
             return List.of();
@@ -78,7 +75,7 @@ public class ImageServiceImp implements IImageService {
             try {
 
                 Image image = Image.builder()
-                        .fileName(uniqueFileName(file))
+                        .fileName(fileService.uniqueFileName(file))
                         .fileType(file.getContentType())
                         .image(new SerialBlob(file.getBytes()))
                         .build();
@@ -91,7 +88,7 @@ public class ImageServiceImp implements IImageService {
 
                 imageRepository.save(savedImage);
 
-                saveInFolderImages(file);
+                fileService.saveInFolderImages(file);
 
                 return imageMapper.mapEntityToDTO(savedImage);
 
@@ -126,7 +123,7 @@ public class ImageServiceImp implements IImageService {
     @Override
     public List<Image> saveImage(List<MultipartFile> filesImage) {
 
-        checkIfFolderExists(FOLDER_IMAGES);
+        fileService.checkIfFolderExists();
 
         if (filesImage == null || filesImage.isEmpty())
             return List.of();
@@ -140,7 +137,7 @@ public class ImageServiceImp implements IImageService {
                 }
 
                 Image image = Image.builder()
-                        .fileName(uniqueFileName(file))
+                        .fileName(fileService.uniqueFileName(file))
                         .fileType(file.getContentType())
                         .image(new SerialBlob(file.getBytes()))
                         .build();
@@ -151,7 +148,7 @@ public class ImageServiceImp implements IImageService {
 
                 savedImage.setDownloadUrl(downloadUrl);
 
-                saveInFolderImages(file);
+                fileService.saveInFolderImages(file);
 
                 return imageRepository.save(savedImage);
 
@@ -160,46 +157,6 @@ public class ImageServiceImp implements IImageService {
                 throw new RuntimeException(e.getMessage());
             }
         }).toList();
-    }
-
-    @SuppressWarnings("null")
-    private String uniqueFileName(MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-        if (fileName.contains("..")) {
-
-            throw new RuntimeException(" file name contains invalid path sequence" + fileName);
-        }
-
-        return UUID.randomUUID().toString() + "_" + fileName;
-    }
-
-    private void saveInFolderImages(MultipartFile file) throws IOException {
-
-        String uniqueFileName = uniqueFileName(file);
-
-        Files.copy(file.getInputStream(), FOLDER_IMAGES.resolve(uniqueFileName), StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    private void checkIfFolderExists(Path path) {
-
-        try {
-
-            if (Files.exists(path)) { // Verifica si el directorio existe.
-
-                System.out.println("El directorio ya existe: " + path.toAbsolutePath());
-
-            } else {
-
-                Files.createDirectories(path); // Crea el directorio si no existe.
-
-                System.out.println("Directorio creado: " + path.toAbsolutePath());
-            }
-
-        } catch (IOException e) {
-
-            System.err.println("Ocurrió un error al verificar o crear el directorio: " + e.getMessage());
-        }
     }
 
 }

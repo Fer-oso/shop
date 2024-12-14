@@ -60,7 +60,6 @@ public class ProductServiceImp implements IProductService {
             return productMapper.mapEntityToDTO(productRepository.save(product));
 
         }).orElseThrow(() -> new NullPointerException("Product cant be null properties"));
-
     }
 
     @Override
