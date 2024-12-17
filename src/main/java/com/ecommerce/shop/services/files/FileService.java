@@ -11,18 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.shop.configurations.folder.FolderConfig;
 
 @Service
 public class FileService {
 
-    FolderConfig folderConfig;
 
-    Path FOLDER_IMAGES;
+    private static String FOLDER_PATH = "src/main/resources/public/img";
 
-    public FileService(FolderConfig folderConfig) {
-        this.folderConfig = folderConfig;
-        this.FOLDER_IMAGES = Paths.get(folderConfig.getFolderpath());
+    Path FOLDER_IMAGES = Paths.get(FOLDER_PATH);
+
+    public FileService() {
+
         checkIfFolderExists();
     }
 
@@ -49,6 +48,7 @@ public class FileService {
 
     @SuppressWarnings("null")
     public String uniqueFileName(MultipartFile file) {
+
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         if (fileName.contains("..")) {
