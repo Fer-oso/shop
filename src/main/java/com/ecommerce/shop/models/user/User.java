@@ -38,7 +38,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "users")
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +60,7 @@ public class User implements UserDetails{
     @Column(name = "credentials_non_expired")
     private boolean credentialsNonExpired;
 
-    @Column(name = "roles",nullable = false)
+    @Column(name = "roles", nullable = false)
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;

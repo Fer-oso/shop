@@ -7,8 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@PreAuthorize("denyAll()")
+
 public class HomeController {
+
+    @GetMapping("/home-public")
+    public String publicHome() {
+        return "welcome home public";
+    }
 
     @GetMapping("/home")
     @PreAuthorize("hasAuthority('READ')")

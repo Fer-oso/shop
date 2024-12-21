@@ -9,6 +9,7 @@ import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
 import com.ecommerce.shop.models.mappers.RoleMapper;
+import com.ecommerce.shop.models.mappers.UserLoginResponseMapper;
 import com.ecommerce.shop.models.mappers.UserMapper;
 
 @Configuration
@@ -43,5 +44,10 @@ public class ModelMapperConfiguration {
     @Bean
     ImageMapper imageMapper() {
         return new ImageMapper(modelMapper());
+    }
+
+    @Bean
+    UserLoginResponseMapper userLoginResponseMapper() {
+        return new UserLoginResponseMapper(modelMapper());
     }
 }

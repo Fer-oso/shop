@@ -29,7 +29,6 @@ import com.ecommerce.shop.services.users.UserServiceImp;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -39,6 +38,9 @@ public class SecurityConfig {
 
         httpSecurity.httpBasic(Customizer.withDefaults());
 
+        httpSecurity.exceptionHandling(
+                exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
+
         httpSecurity.sessionManagement(
                 sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -46,10 +48,21 @@ public class SecurityConfig {
          * httpSecurity.authorizeHttpRequests(httpRequest -> {
          * 
          * httpRequest.requestMatchers(HttpMethod.GET,
-         * "/auth/home").hasAuthority("WRITE");
+         * "/api/shop/users").hasAnyAuthority("CREATE", "UPDATE", "READ", "DELETE");
          * 
          * httpRequest.requestMatchers(HttpMethod.GET,
-         * "/auth/home-secured").hasAuthority("READ");
+         * "/api/shop/users/*").hasAnyRole("ADMIN");
+         * 
+         * httpRequest.requestMatchers("/auth/home").permitAll();
+         * 
+         * httpRequest.requestMatchers("/auth/home-public").permitAll();
+         * 
+         * httpRequest.requestMatchers("/auth/home-secured").hasAnyAuthority("CREATE",
+         * "UPDATE", "READ", "DELETE");
+         * 
+         * httpRequest.requestMatchers(HttpMethod.GET,
+         * "/auth/home-secured2").hasRole("ADMIN");
+         * 
          * });
          */
 
@@ -76,18 +89,18 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
 
-        return  new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-      CorsConfigurationSource corsConfigurationSource() {
-        
+    CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173/");
         configuration.addAllowedMethod("*"); // Permitir todos los métodos
         configuration.addAllowedHeader("*"); // Permitir todos los headers
         configuration.setAllowCredentials(true);
-    
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

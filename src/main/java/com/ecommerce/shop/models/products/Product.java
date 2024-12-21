@@ -1,6 +1,5 @@
 package com.ecommerce.shop.models.products;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.ecommerce.shop.models.category.Category;

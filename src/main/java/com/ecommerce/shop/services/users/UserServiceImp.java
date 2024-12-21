@@ -9,12 +9,11 @@ import org.springframework.dao.DataAccessException;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.shop.models.DTO.UserDTO;
+import com.ecommerce.shop.models.DTO.users.UserDTO;
 import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.models.user.Role;
 import com.ecommerce.shop.models.user.User;
@@ -32,7 +31,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class UserServiceImp implements IUserService, UserDetailsService {
+public class UserServiceImp implements IUserService {
 
     UserRepository userRepository;
     IRoleService roleService;
@@ -111,19 +110,19 @@ public class UserServiceImp implements IUserService, UserDetailsService {
     public List<UserDTO> findAll() {
 
         try {
-            
+
             var userList = userRepository.findAll();
 
-            if(userList.isEmpty()) {
-                
+            if (userList.isEmpty()) {
+
                 throw new NoUsersFoundException("No users in database");
             }
-            
+
             return userList.stream().map(user -> userMapper.mapEntityToDTO(user)).toList();
 
         } catch (DataAccessException e) {
 
-            throw new DataBaseAccessException("Error accessing the database "+e.getMessage(), e);
+            throw new DataBaseAccessException("Error accessing the database " + e.getMessage(), e);
         }
     }
 
@@ -145,10 +144,6 @@ public class UserServiceImp implements IUserService, UserDetailsService {
         user.setAuthorities(listAuthorities);
 
         return user;
-
-        /*return new User(user.getUsername(), user.getPassword(),
-                user.isEnabled(), user.isAccountNonExpired(), user.isCredentialsNonExpired(), user.isAccountNonLocked(),
-                listAuthorities); */
     }
 
 }
