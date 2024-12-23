@@ -8,5 +8,15 @@
     "name": "folder.path",
     "type": "java.lang.String",
     "description": "path to save and load images'"
+  },
+  {
+    "name": "security.jwt.key.private",
+    "type": "java.lang.String",
+    "description": "Security key'"
+  },
+  {
+    "name": "security.jwt.user.private",
+    "type": "java.lang.String",
+    "description": "User security'"
   }
 ]}

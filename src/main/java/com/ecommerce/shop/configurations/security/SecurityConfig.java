@@ -19,16 +19,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.ecommerce.shop.configurations.jwt.JwtAuthFilter;
+import com.ecommerce.shop.configurations.jwt.utils.JwtUtils;
 import com.ecommerce.shop.services.users.UserServiceImp;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    private JwtUtils jwtUtils;
+
+    public SecurityConfig(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -38,8 +48,10 @@ public class SecurityConfig {
 
         httpSecurity.httpBasic(Customizer.withDefaults());
 
-        httpSecurity.exceptionHandling(
-                exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
+        httpSecurity.addFilterBefore(new JwtAuthFilter(jwtUtils), BasicAuthenticationFilter.class);
+
+       // httpSecurity.exceptionHandling(
+       //         exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
 
         httpSecurity.sessionManagement(
                 sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

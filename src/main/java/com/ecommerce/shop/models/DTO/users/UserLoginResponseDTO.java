@@ -27,5 +27,7 @@ public class UserLoginResponseDTO {
 
     private String password;
 
+    private String token;
+
     private Set<RoleDTO> roles;
 }
