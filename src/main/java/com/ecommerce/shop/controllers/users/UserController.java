@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping("/api/shop")
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     IUserService userService;
@@ -44,16 +44,9 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> findAll(@RequestHeader("Authorization") String authHeader) {
-
-        String token = authHeader.replace("Bearer ", "");
-
-        if (!authService.isValidToken(token)) {
-           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-     }
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> findAll() {
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
-
     }
 }

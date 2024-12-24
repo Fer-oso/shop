@@ -50,8 +50,7 @@ public class SecurityConfig {
 
         httpSecurity.addFilterBefore(new JwtAuthFilter(jwtUtils), BasicAuthenticationFilter.class);
 
-       // httpSecurity.exceptionHandling(
-       //         exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
+        httpSecurity.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
 
         httpSecurity.sessionManagement(
                 sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

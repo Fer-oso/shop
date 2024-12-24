@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import com.ecommerce.shop.services.products.IProductService;
 
 @RestController
 @RequestMapping("${api.prefix}/products")
+@PreAuthorize("isAuthenticated()")
 public class ProductControler {
 
     IProductService productService;
@@ -79,6 +81,7 @@ public class ProductControler {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> findAll() {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
