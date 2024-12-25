@@ -96,8 +96,20 @@ public class UserServiceImp implements IUserService {
 
     @Override
     public UserDTO update(UserDTO userDTO, Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+
+        return userRepository.findById(id).map(user -> {
+
+            user = userMapper.mapDTOToEntity(userDTO);
+
+            user.getRoles().clear();
+
+            user = userRepository.save(user);
+
+            user.setRoles(checkAndSetRoleList(userDTO));
+
+            return userMapper.mapEntityToDTO(userRepository.save(user));
+
+        }).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND WITH THAT ID" + id));
     }
 
     @Override

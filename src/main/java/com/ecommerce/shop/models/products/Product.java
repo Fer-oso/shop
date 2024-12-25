@@ -44,7 +44,7 @@ public class Product {
     @Column(name = "brand", nullable = false)
     private String brand;
 
-    @Column(length = 500)
+    @Column(length = 2000)
     private String description;
 
     @Min(1)

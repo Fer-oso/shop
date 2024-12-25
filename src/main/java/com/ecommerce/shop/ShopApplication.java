@@ -44,6 +44,10 @@ public class ShopApplication {
 							deletePermission))
 					.build();
 
+			Role roleInvited = Role.builder().roleName(ROLE_NAME.INVITED)
+					.permissions(Set.of(readPermission))
+					.build();
+
 			User userAdmin = User.builder().username("ferAdmin").password(new BCryptPasswordEncoder().encode("1234"))
 					.roles(Set.of(roleAdmin))
 					.enabled(true)
@@ -55,7 +59,12 @@ public class ShopApplication {
 					.accountNonExpired(true)
 					.accountNonLocked(true).credentialsNonExpired(true).build();
 
-			userRepository.saveAll(List.of(user, userAdmin));
+			User userInvited = User.builder().username("ferInvited").password(new BCryptPasswordEncoder()
+					.encode("1234")).roles(Set.of(roleInvited,roleAdmin)).enabled(true)
+					.accountNonExpired(true)
+					.accountNonLocked(true).credentialsNonExpired(true).build();
+
+			userRepository.saveAll(List.of(user, userAdmin, userInvited));
 		};
 	}
 

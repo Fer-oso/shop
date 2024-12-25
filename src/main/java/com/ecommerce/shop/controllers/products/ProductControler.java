@@ -33,6 +33,7 @@ public class ProductControler {
         this.productService = productService;
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ResponseSuccessModel> createProduct(@RequestPart("product") ProductDTO productDTO,
             @RequestPart(name = "image", required = false) List<MultipartFile> images) {
@@ -81,8 +82,8 @@ public class ProductControler {
     }
 
     @GetMapping()
-    @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<?> findAll() {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    ResponseEntity<ResponseSuccessModel> findAll() {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
                 .status("OK")

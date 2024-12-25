@@ -12,27 +12,17 @@ public class AuthService {
 
     JwtUtils jwtUtils;
 
-
     public AuthService(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
 
     private final Map<String, String> userTokenStorage = new HashMap<>();
-    
-    private void storeToken(String username, String token){
-
-        userTokenStorage.put(username, token);
-
-        System.out.println("Token stored: " + token + " for username: " + username);
-
-        System.out.println("");
-    }
 
     public boolean isValidToken(String token) {
 
         String username = jwtUtils.extractUsername(jwtUtils.validateToken(token));
 
-        storeToken(username, token);
+        userTokenStorage.put(username, token);
 
         String storedToken = userTokenStorage.get(username);
 
