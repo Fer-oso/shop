@@ -2,6 +2,8 @@ package com.ecommerce.shop.models.DTO;
 
 import java.util.List;
 
+import com.ecommerce.shop.models.DTO.category.CategoryDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

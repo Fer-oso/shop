@@ -5,10 +5,12 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.ecommerce.shop.models.mappers.BuyerMapper;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
 import com.ecommerce.shop.models.mappers.RoleMapper;
+import com.ecommerce.shop.models.mappers.ShoppingCartMapper;
 import com.ecommerce.shop.models.mappers.UserLoginResponseMapper;
 import com.ecommerce.shop.models.mappers.UserMapper;
 
@@ -47,7 +49,18 @@ public class ModelMapperConfiguration {
     }
 
     @Bean
+    BuyerMapper buyerMapper(){
+        return new BuyerMapper(modelMapper());
+    }
+
+    @Bean
+    ShoppingCartMapper shoppingCartMapper(){
+        return new ShoppingCartMapper(modelMapper());
+    }
+
+    @Bean
     UserLoginResponseMapper userLoginResponseMapper() {
         return new UserLoginResponseMapper(modelMapper());
     }
+
 }

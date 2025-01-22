@@ -19,6 +19,7 @@ import com.ecommerce.shop.models.user.Role;
 import com.ecommerce.shop.models.user.User;
 import com.ecommerce.shop.models.user.enums.ROLE_NAME;
 import com.ecommerce.shop.repository.users.UserRepository;
+import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 import com.ecommerce.shop.services.users.exceptions.DataBaseAccessException;
 import com.ecommerce.shop.services.users.exceptions.DuplicateUsernameException;
 import com.ecommerce.shop.services.users.exceptions.NoUsersFoundException;
@@ -114,8 +115,18 @@ public class UserServiceImp implements IUserService {
 
     @Override
     public String deleteById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+
+        return userRepository.findById(id).map(user -> {
+
+            user.getRoles().clear();
+
+            userRepository.save(user);
+            
+            userRepository.deleteById(id);
+
+            return "User: " + user.getUsername() + " deleted succesfully with id: " + id;
+
+        }).orElseThrow(() -> new ProductNotFoundException("User not found with that id: " + id));
     }
 
     @Override

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.ecommerce.shop.models.category.Category;
 import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.shoppingcart.ShoppingCart;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -70,4 +73,7 @@ public class Product {
     @OneToMany(orphanRemoval = true)
     @JoinTable(name = "product_image", joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<Image> images;
+
+    @ManyToMany(mappedBy = "productsList")
+    private List<ShoppingCart> shoppingCarts;
 }

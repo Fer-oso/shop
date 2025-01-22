@@ -1,4 +1,4 @@
-package com.ecommerce.shop.models.DTO;
+package com.ecommerce.shop.models.DTO.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

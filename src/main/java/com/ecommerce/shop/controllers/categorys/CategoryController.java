@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
-import com.ecommerce.shop.models.DTO.CategoryDTO;
+import com.ecommerce.shop.models.DTO.category.CategoryDTO;
 import com.ecommerce.shop.services.category.ICategoryService;
 
 @RestController

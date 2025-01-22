@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.shop.models.DTO.CategoryDTO;
+import com.ecommerce.shop.models.DTO.category.CategoryDTO;
 import com.ecommerce.shop.models.category.Category;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.repository.category.CategoryRepository;

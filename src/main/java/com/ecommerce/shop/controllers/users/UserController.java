@@ -16,6 +16,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,6 +65,17 @@ public class UserController {
                 .status("OK")
                 .code("200")
                 .response(userService.findAll())
+                .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResponseSuccessModel> deleteById(@PathVariable Long id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(userService.deleteById(id))
                 .timestamp(LocalDateTime.now())
                 .build());
     }

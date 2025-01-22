@@ -67,5 +67,5 @@ public class ShopApplication {
 			userRepository.saveAll(List.of(user, userAdmin, userInvited));
 		};
 	}
-
+  
 }

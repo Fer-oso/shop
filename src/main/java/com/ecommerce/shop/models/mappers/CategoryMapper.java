@@ -2,7 +2,7 @@ package com.ecommerce.shop.models.mappers;
 
 import org.modelmapper.ModelMapper;
 
-import com.ecommerce.shop.models.DTO.CategoryDTO;
+import com.ecommerce.shop.models.DTO.category.CategoryDTO;
 import com.ecommerce.shop.models.category.Category;
 
 public class CategoryMapper implements IObjectMapper<Category, CategoryDTO> {
