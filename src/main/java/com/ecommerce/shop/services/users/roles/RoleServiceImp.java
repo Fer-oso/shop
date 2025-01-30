@@ -5,10 +5,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.shop.models.DTO.RoleDTO;
+import com.ecommerce.shop.models.DTO.users.RoleDTO;
+import com.ecommerce.shop.models.entitys.user.Role;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
 import com.ecommerce.shop.models.mappers.RoleMapper;
-import com.ecommerce.shop.models.user.Role;
-import com.ecommerce.shop.models.user.enums.ROLE_NAME;
 import com.ecommerce.shop.repository.users.roles.RoleRepository;
 
 import jakarta.transaction.Transactional;

@@ -1,9 +1,10 @@
-package com.ecommerce.shop.models.mappers;
+package com.ecommerce.shop.models.mappers.buyer;
 
 import org.modelmapper.ModelMapper;
 
 import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
-import com.ecommerce.shop.models.buyer.Buyer;
+import com.ecommerce.shop.models.entitys.buyer.Buyer;
+import com.ecommerce.shop.models.mappers.IObjectMapper;
 
 public class BuyerMapper implements IObjectMapper<Buyer, BuyerDTO>{
 

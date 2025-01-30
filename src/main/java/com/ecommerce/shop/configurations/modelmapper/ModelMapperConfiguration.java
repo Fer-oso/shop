@@ -1,11 +1,11 @@
 package com.ecommerce.shop.configurations.modelmapper;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.ecommerce.shop.models.mappers.BuyerMapper;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
@@ -13,13 +13,18 @@ import com.ecommerce.shop.models.mappers.RoleMapper;
 import com.ecommerce.shop.models.mappers.ShoppingCartMapper;
 import com.ecommerce.shop.models.mappers.UserLoginResponseMapper;
 import com.ecommerce.shop.models.mappers.UserMapper;
+import com.ecommerce.shop.models.mappers.buyer.BuyerMapper;
+import com.ecommerce.shop.models.mappers.product.ProductShoppingCartMapper;
 
 @Configuration
 public class ModelMapperConfiguration {
 
     ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        modelMapper.getConfiguration()
+        .setMatchingStrategy(MatchingStrategies.LOOSE)
+        .setFieldMatchingEnabled(true)
+        .setFieldAccessLevel(AccessLevel.PRIVATE);
         return modelMapper;
     }
 
@@ -49,12 +54,16 @@ public class ModelMapperConfiguration {
     }
 
     @Bean
-    BuyerMapper buyerMapper(){
+    BuyerMapper buyerMapper() {
         return new BuyerMapper(modelMapper());
     }
 
     @Bean
-    ShoppingCartMapper shoppingCartMapper(){
+    ProductShoppingCartMapper productShoppingCartMapper() {
+        return new ProductShoppingCartMapper(modelMapper());
+    }
+    @Bean
+    ShoppingCartMapper shoppingCartMapper() {
         return new ShoppingCartMapper(modelMapper());
     }
 

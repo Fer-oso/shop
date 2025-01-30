@@ -9,10 +9,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.ecommerce.shop.models.user.Permission;
-import com.ecommerce.shop.models.user.Role;
-import com.ecommerce.shop.models.user.User;
-import com.ecommerce.shop.models.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.category.Category;
+import com.ecommerce.shop.models.entitys.products.Product;
+import com.ecommerce.shop.models.entitys.user.Permission;
+import com.ecommerce.shop.models.entitys.user.Role;
+import com.ecommerce.shop.models.entitys.user.User;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.repository.category.CategoryRepository;
+import com.ecommerce.shop.repository.products.ProductRepository;
 import com.ecommerce.shop.repository.users.UserRepository;
 
 @SpringBootApplication
@@ -24,7 +28,7 @@ public class ShopApplication {
 
 	/* */
 	@Bean
-	CommandLineRunner init(UserRepository userRepository) {
+	CommandLineRunner init(UserRepository userRepository, CategoryRepository categoryRepository, ProductRepository productRepository) {
 		return args -> {
 			Permission createPermission = Permission.builder().name("CREATE").build();
 
@@ -65,7 +69,17 @@ public class ShopApplication {
 					.accountNonLocked(true).credentialsNonExpired(true).build();
 
 			userRepository.saveAll(List.of(user, userAdmin, userInvited));
+
+			Category category = Category.builder().name("Microprocesadores").build();
+
+			Product product1 = Product.builder().name("Intel i9 10900k").price(500).code("Intel1234").category(category).brand("Intel").build();
+
+			Product product2 = Product.builder().name("Intel i10 10900k").price(500).code("Intel1234").category(category)
+					.brand("Intel").build();
+			categoryRepository.save(category);
+
+			productRepository.saveAll(Set.of(product1, product2));
 		};
 	}
-  
+ 
 }

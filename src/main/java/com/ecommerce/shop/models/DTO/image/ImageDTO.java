@@ -1,11 +1,4 @@
-package com.ecommerce.shop.models.image;
-
-import java.sql.Blob;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+package com.ecommerce.shop.models.DTO.image;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,14 +15,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-@Entity
-public class Image {
+public class ImageDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String fileName;
-    private String fileType;
-    private Blob image;
     private String downloadUrl;
 }

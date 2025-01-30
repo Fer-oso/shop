@@ -1,11 +1,9 @@
-package com.ecommerce.shop.models.products;
+package com.ecommerce.shop.models.entitys.products;
 
 import java.util.List;
 
-import com.ecommerce.shop.models.category.Category;
-import com.ecommerce.shop.models.image.Image;
-import com.ecommerce.shop.models.shoppingcart.ShoppingCart;
-
+import com.ecommerce.shop.models.entitys.category.Category;
+import com.ecommerce.shop.models.entitys.image.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,11 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -26,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -35,6 +31,7 @@ import lombok.ToString;
 @ToString
 @Table(name = "products")
 @Builder
+@Entity
 public class Product {
 
     @Id
@@ -50,7 +47,6 @@ public class Product {
     @Column(length = 2000)
     private String description;
 
-    @Min(1)
     @Column(name = "price", nullable = false)
     private int price;
 
@@ -73,7 +69,4 @@ public class Product {
     @OneToMany(orphanRemoval = true)
     @JoinTable(name = "product_image", joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<Image> images;
-
-    @ManyToMany(mappedBy = "productsList")
-    private List<ShoppingCart> shoppingCarts;
 }

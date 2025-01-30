@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
-import com.ecommerce.shop.models.DTO.ProductDTO;
-import com.ecommerce.shop.services.products.IProductService;
+import com.ecommerce.shop.models.DTO.product.ProductDTO;
+import com.ecommerce.shop.services.products.productsStore.IProductService;
 
 @RestController
 @RequestMapping("${api.prefix}/products")

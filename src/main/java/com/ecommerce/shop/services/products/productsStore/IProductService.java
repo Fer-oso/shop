@@ -1,10 +1,10 @@
-package com.ecommerce.shop.services.products;
+package com.ecommerce.shop.services.products.productsStore;
 
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.shop.models.DTO.ProductDTO;
+import com.ecommerce.shop.models.DTO.product.ProductDTO;
 
 public interface IProductService {
 
@@ -29,5 +29,6 @@ public interface IProductService {
     List<ProductDTO> findProductsByCategoryAndBrand(String category, String brand);
 
     Long countProductsByBrandAndName(String brand, String name);
+
 
 }

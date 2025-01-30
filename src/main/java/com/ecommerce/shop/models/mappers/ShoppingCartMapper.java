@@ -3,7 +3,7 @@ package com.ecommerce.shop.models.mappers;
 import org.modelmapper.ModelMapper;
 
 import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
-import com.ecommerce.shop.models.shoppingcart.ShoppingCart;
+import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
 
 public class ShoppingCartMapper  implements IObjectMapper<ShoppingCart, ShoppingCartDTO>{
 

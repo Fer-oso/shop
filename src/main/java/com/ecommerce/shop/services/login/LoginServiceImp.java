@@ -10,12 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.shop.configurations.jwt.utils.JwtUtils;
-import com.ecommerce.shop.models.DTO.RoleDTO;
 import com.ecommerce.shop.models.DTO.users.CredentialsUser;
+import com.ecommerce.shop.models.DTO.users.RoleDTO;
 import com.ecommerce.shop.models.DTO.users.UserLoginResponseDTO;
+import com.ecommerce.shop.models.entitys.user.User;
 import com.ecommerce.shop.models.mappers.RoleMapper;
 import com.ecommerce.shop.models.mappers.UserLoginResponseMapper;
-import com.ecommerce.shop.models.user.User;
 import com.ecommerce.shop.services.auth.AuthService;
 import com.ecommerce.shop.services.users.IUserService;
 

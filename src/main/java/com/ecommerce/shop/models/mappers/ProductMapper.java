@@ -2,8 +2,8 @@ package com.ecommerce.shop.models.mappers;
 
 import org.modelmapper.ModelMapper;
 
-import com.ecommerce.shop.models.DTO.ProductDTO;
-import com.ecommerce.shop.models.products.Product;
+import com.ecommerce.shop.models.DTO.product.ProductDTO;
+import com.ecommerce.shop.models.entitys.products.Product;
 
 public class ProductMapper implements IObjectMapper<Product, ProductDTO> {
 

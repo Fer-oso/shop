@@ -3,8 +3,8 @@ package com.ecommerce.shop.models.mappers;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
-import com.ecommerce.shop.models.DTO.RoleDTO;
-import com.ecommerce.shop.models.user.Role;
+import com.ecommerce.shop.models.DTO.users.RoleDTO;
+import com.ecommerce.shop.models.entitys.user.Role;
 
 
 public class RoleMapper implements IObjectMapper<Role,RoleDTO>{

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.ecommerce.shop.models.user.Permission;
+import com.ecommerce.shop.models.entitys.user.Permission;
 
 public interface PermissionRepository extends JpaRepository<Permission,Long>{
     

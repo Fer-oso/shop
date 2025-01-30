@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.shop.models.DTO.ImageDTO;
-import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.DTO.image.ImageDTO;
+import com.ecommerce.shop.models.entitys.image.Image;
 
 public interface IImageService {
 

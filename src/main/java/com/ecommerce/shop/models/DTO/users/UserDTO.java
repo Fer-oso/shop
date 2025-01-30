@@ -3,8 +3,7 @@ package com.ecommerce.shop.models.DTO.users;
 import java.util.List;
 import java.util.Set;
 
-import com.ecommerce.shop.models.DTO.ImageDTO;
-import com.ecommerce.shop.models.DTO.RoleDTO;
+import com.ecommerce.shop.models.DTO.image.ImageDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

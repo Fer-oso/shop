@@ -1,4 +1,4 @@
-package com.ecommerce.shop.services.products;
+package com.ecommerce.shop.services.products.productsStore;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.shop.models.DTO.ProductDTO;
-import com.ecommerce.shop.models.category.Category;
-import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.DTO.product.ProductDTO;
+import com.ecommerce.shop.models.entitys.category.Category;
+import com.ecommerce.shop.models.entitys.image.Image;
+import com.ecommerce.shop.models.entitys.products.Product;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
-import com.ecommerce.shop.models.products.Product;
 import com.ecommerce.shop.repository.products.ProductRepository;
 
 import com.ecommerce.shop.services.category.ICategoryService;

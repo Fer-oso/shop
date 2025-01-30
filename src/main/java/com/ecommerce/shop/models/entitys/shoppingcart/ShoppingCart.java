@@ -1,10 +1,9 @@
-package com.ecommerce.shop.models.buyer;
+package com.ecommerce.shop.models.entitys.shoppingcart;
 
 import java.util.List;
 
-import com.ecommerce.shop.models.shoppingcart.ShoppingCart;
-import com.ecommerce.shop.models.user.User;
-
+import com.ecommerce.shop.models.entitys.buyer.Buyer;
+import com.ecommerce.shop.models.entitys.products.ProductShoppingCart;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,25 +28,19 @@ import lombok.ToString;
 @ToString
 @Builder
 @Entity
-public class Buyer {
-
+public class ShoppingCart {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
-
-    private String email;
-
-    private String address;
-
-    private int phoneNumber;
-
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
+    @JoinColumn(name = "buyer_id",referencedColumnName = "id")
+    private Buyer buyer;
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ShoppingCart> shoppingCart;
+    @OneToMany( mappedBy = "shoppingCart",cascade = CascadeType.MERGE, orphanRemoval = true)
+    //@JoinTable(name = " shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"),inverseJoinColumns = @JoinColumn(name="product_id"))
+    private List<ProductShoppingCart> productsList;
 
+    private int total;
 }

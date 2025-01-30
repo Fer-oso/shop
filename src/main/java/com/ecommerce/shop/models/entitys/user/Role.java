@@ -1,8 +1,8 @@
-package com.ecommerce.shop.models.user;
+package com.ecommerce.shop.models.entitys.user;
 
 import java.util.Set;
 
-import com.ecommerce.shop.models.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.shop.models.DTO.ImageDTO;
-import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.DTO.image.ImageDTO;
+import com.ecommerce.shop.models.entitys.image.Image;
 import com.ecommerce.shop.services.images.IImageService;
 
 @RestController
@@ -71,7 +71,5 @@ public class ImagesController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
     }
-
 }

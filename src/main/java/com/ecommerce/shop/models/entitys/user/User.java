@@ -1,4 +1,4 @@
-package com.ecommerce.shop.models.user;
+package com.ecommerce.shop.models.entitys.user;
 
 import java.util.List;
 import java.util.Set;
@@ -6,8 +6,7 @@ import java.util.Set;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ecommerce.shop.models.buyer.Buyer;
-import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.entitys.image.Image;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,7 +19,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -73,7 +71,4 @@ public class User implements UserDetails {
     @OneToMany(orphanRemoval = true)
     @JoinTable(name = "user_image", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<Image> profileImages;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Buyer buyer;
 }

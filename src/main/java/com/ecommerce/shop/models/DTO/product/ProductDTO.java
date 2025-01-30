@@ -1,8 +1,9 @@
-package com.ecommerce.shop.models.DTO;
+package com.ecommerce.shop.models.DTO.product;
 
 import java.util.List;
 
 import com.ecommerce.shop.models.DTO.category.CategoryDTO;
+import com.ecommerce.shop.models.DTO.image.ImageDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

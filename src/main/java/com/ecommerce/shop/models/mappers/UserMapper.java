@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
 import com.ecommerce.shop.models.DTO.users.UserDTO;
-import com.ecommerce.shop.models.user.User;
+import com.ecommerce.shop.models.entitys.user.User;
 
 public class UserMapper implements IObjectMapper<User, UserDTO> {
 

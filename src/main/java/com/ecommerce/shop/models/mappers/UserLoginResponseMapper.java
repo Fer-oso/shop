@@ -3,7 +3,7 @@ package com.ecommerce.shop.models.mappers;
 import org.modelmapper.ModelMapper;
 
 import com.ecommerce.shop.models.DTO.users.UserLoginResponseDTO;
-import com.ecommerce.shop.models.user.User;
+import com.ecommerce.shop.models.entitys.user.User;
 
 public class UserLoginResponseMapper implements IObjectMapper<User, UserLoginResponseDTO> {
 

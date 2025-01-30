@@ -1,6 +1,6 @@
-package com.ecommerce.shop.models.DTO;
+package com.ecommerce.shop.models.DTO.users;
 
-import com.ecommerce.shop.models.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

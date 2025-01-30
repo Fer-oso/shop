@@ -1,6 +1,4 @@
-package com.ecommerce.shop.models.DTO.users;
-
-import java.util.Set;
+package com.ecommerce.shop.models.DTO.buyer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,24 +6,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @Builder
-public class UserLoginResponseDTO {
-
+public class UserBuyerDTO {
+    
     private Long id;
-
     private String username;
-
-    private String password;
-
-    private String token;
-
-    private Set<RoleDTO> roles;
 }

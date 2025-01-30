@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.shop.models.buyer.Buyer;
+import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
 import com.ecommerce.shop.services.buyer.IBuyerService;
 
 @RestController
@@ -24,12 +24,17 @@ public class BuyerController {
 
 
    @PostMapping
-   public ResponseEntity<?> save(@RequestBody Buyer buyer){
-    return ResponseEntity.status(HttpStatus.CREATED).body(buyerService.save(buyer));
+   public ResponseEntity<?> save(@RequestBody BuyerDTO buyerDTO){
+    return ResponseEntity.status(HttpStatus.CREATED).body(buyerService.save(buyerDTO));
    }
 
    @GetMapping("/{id}")
    public ResponseEntity<?> findById(@PathVariable Long id){
     return ResponseEntity.status(HttpStatus.OK).body(buyerService.findById(id));
+   }
+
+   @GetMapping
+   public ResponseEntity<?> findAll(){
+    return ResponseEntity.status(HttpStatus.OK).body(buyerService.findAll());
    }
 }

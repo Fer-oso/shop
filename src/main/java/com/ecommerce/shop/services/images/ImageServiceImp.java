@@ -8,8 +8,8 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.shop.models.DTO.ImageDTO;
-import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.DTO.image.ImageDTO;
+import com.ecommerce.shop.models.entitys.image.Image;
 import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
 

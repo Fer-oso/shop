@@ -2,8 +2,8 @@ package com.ecommerce.shop.models.mappers;
 
 import org.modelmapper.ModelMapper;
 
-import com.ecommerce.shop.models.DTO.ImageDTO;
-import com.ecommerce.shop.models.image.Image;
+import com.ecommerce.shop.models.DTO.image.ImageDTO;
+import com.ecommerce.shop.models.entitys.image.Image;
 
 public class ImageMapper implements IObjectMapper<Image, ImageDTO> {
 

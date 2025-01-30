@@ -14,10 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.shop.models.DTO.users.UserDTO;
+import com.ecommerce.shop.models.entitys.user.Role;
+import com.ecommerce.shop.models.entitys.user.User;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
 import com.ecommerce.shop.models.mappers.UserMapper;
-import com.ecommerce.shop.models.user.Role;
-import com.ecommerce.shop.models.user.User;
-import com.ecommerce.shop.models.user.enums.ROLE_NAME;
 import com.ecommerce.shop.repository.users.UserRepository;
 import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 import com.ecommerce.shop.services.users.exceptions.DataBaseAccessException;
