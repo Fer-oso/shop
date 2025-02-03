@@ -34,7 +34,7 @@ public class BuyerDTO {
     @JsonProperty("phonenumber")
     private int phoneNumber;
 
-    @JsonProperty("shoppingcart")
+    @JsonProperty("shopping-cart")
     @JsonIgnoreProperties("buyer")
     private List<ShoppingCartDTO> shoppingCart;
 

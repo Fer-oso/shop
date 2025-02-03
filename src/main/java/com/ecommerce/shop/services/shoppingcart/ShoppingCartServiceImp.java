@@ -78,7 +78,7 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
             shoppingCartRepository.save(shoppingCart);
 
-            List<ProductShoppingCart> productShoppingCartList = orderDTO.getShoppingCart().getProductsList().stream()
+            List<ProductShoppingCart> productShoppingCartList = orderDTO.getShoppingCart().getProducts().stream()
                     .map(productShoppingCartDTO -> {
 
                         Product product = productMapper
@@ -88,7 +88,7 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
                         ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
                                 .product(product)
-                                .shoppingCart(shoppingCart)
+                                
                                 .quantity(productShoppingCartDTO.getQuantity())
                                 .subtotal(productShoppingCartDTO.getSubtotal())
                                 .build();
@@ -97,7 +97,9 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
                     }).collect(Collectors.toList());
 
-            shoppingCart.setProductsList(productShoppingCartList);
+            shoppingCart.setProducts(productShoppingCartList);
+
+            shoppingCart.setTotal(dto.getTotal());
 
             shoppingCartRepository.save(shoppingCart);
 

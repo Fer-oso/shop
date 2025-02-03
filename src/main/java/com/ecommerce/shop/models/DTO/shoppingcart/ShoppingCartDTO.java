@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
 import com.ecommerce.shop.models.DTO.product.ProductShoppingCartDTO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -22,10 +25,11 @@ import lombok.ToString;
 public class ShoppingCartDTO {
     
     private Long id;
-    
+    @JsonIgnoreProperties("shopping-cart")
     private BuyerDTO buyer;
 
-    private List<ProductShoppingCartDTO> productsList;
+    @JsonProperty("products")
+    private List<ProductShoppingCartDTO> products;
 
     private int total;
 }

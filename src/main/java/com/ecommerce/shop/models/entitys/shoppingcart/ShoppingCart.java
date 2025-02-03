@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -20,12 +21,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
+@NoArgsConstructor@AllArgsConstructor
+@Getter@Setter
+@EqualsAndHashCode@ToString
 @Builder
 @Entity
 public class ShoppingCart {
@@ -38,9 +36,9 @@ public class ShoppingCart {
     @JoinColumn(name = "buyer_id",referencedColumnName = "id")
     private Buyer buyer;
 
-    @OneToMany( mappedBy = "shoppingCart",cascade = CascadeType.MERGE, orphanRemoval = true)
-    //@JoinTable(name = " shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"),inverseJoinColumns = @JoinColumn(name="product_id"))
-    private List<ProductShoppingCart> productsList;
+    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true)
+    @JoinTable(name = " shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"),inverseJoinColumns = @JoinColumn(name="product_id"))
+    private List<ProductShoppingCart> products;
 
     private int total;
 }

@@ -1,7 +1,6 @@
 package com.ecommerce.shop.models.DTO.product;
 
-import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,13 +19,10 @@ public class ProductShoppingCartDTO {
 
     private Long id;
     
+    @JsonIgnoreProperties({"stock","available"})
     private ProductDTO product;
 
     private int quantity;
 
     private int subtotal;
-
-    @JsonIgnore
-    private ShoppingCartDTO shoppingCart;
-
 }
