@@ -26,7 +26,6 @@ public class ImageServiceImp implements IImageService {
 
     ImageRepository imageRepository;
 
-    ProductMapper productMapper;
     ImageMapper imageMapper;
 
     FileService fileService;
@@ -35,10 +34,9 @@ public class ImageServiceImp implements IImageService {
 
     public ImageServiceImp(ImageRepository imageRepository,
             ImageMapper imageMapper,
-            ProductMapper productMapper, FileService fileService) {
+            FileService fileService) {
         this.imageRepository = imageRepository;
         this.imageMapper = imageMapper;
-        this.productMapper = productMapper;
         this.fileService = fileService;
     }
 

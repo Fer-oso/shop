@@ -18,5 +18,10 @@
     "name": "security.jwt.user.private",
     "type": "java.lang.String",
     "description": "User security'"
+  },
+  {
+    "name": "mercadopago.accesstoken",
+    "type": "java.lang.String",
+    "description": "mercadopago.ACCESS_TOKEN"
   }
 ]}

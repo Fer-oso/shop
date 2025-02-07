@@ -1,5 +1,7 @@
 package com.ecommerce.shop.configurations.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -50,7 +52,8 @@ public class SecurityConfig {
 
         httpSecurity.addFilterBefore(new JwtAuthFilter(jwtUtils), BasicAuthenticationFilter.class);
 
-        httpSecurity.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
+        httpSecurity.exceptionHandling(
+                exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
 
         httpSecurity.sessionManagement(
                 sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -108,6 +111,8 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173/");
+        configuration.setAllowedOrigins(List.of("http://localhost:5173/",
+                "https://bell-examinations-jurisdiction-gem.trycloudflare.com"));
         configuration.addAllowedMethod("*"); // Permitir todos los métodos
         configuration.addAllowedHeader("*"); // Permitir todos los headers
         configuration.setAllowCredentials(true);
