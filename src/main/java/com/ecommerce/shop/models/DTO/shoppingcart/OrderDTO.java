@@ -14,10 +14,10 @@ import lombok.ToString;
 @ToString
 @Builder
 public class OrderDTO {
-    
+
     private BuyerDTO buyer;
 
-    private ShoppingCartDTO shoppingCart;
+    private ShoppingCartBaseDTO productsList;
 
     private int total;
 }

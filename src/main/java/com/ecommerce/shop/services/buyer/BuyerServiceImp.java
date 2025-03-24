@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class BuyerServiceImp implements IBuyerService{
+public class BuyerServiceImp implements IBuyerService {
 
     BuyerRepository buyerRepository;
     BuyerMapper buyerMapper;
@@ -27,7 +27,7 @@ public class BuyerServiceImp implements IBuyerService{
     UserMapper userMapper;;
 
     public BuyerServiceImp(BuyerRepository buyerRepository, BuyerMapper buyerMapper,
-           IUserService userService, UserMapper userMapper) {
+            IUserService userService, UserMapper userMapper) {
         this.buyerRepository = buyerRepository;
         this.buyerMapper = buyerMapper;
         this.userService = userService;
@@ -36,7 +36,7 @@ public class BuyerServiceImp implements IBuyerService{
 
     @Override
     public BuyerDTO save(BuyerDTO buyerDTO) {
-        
+
         return Optional.of(buyerDTO).map(dto -> {
 
             User user = userMapper.mapDTOToEntity(userService.findById(dto.getUser().getId()));
@@ -48,13 +48,12 @@ public class BuyerServiceImp implements IBuyerService{
             return buyerMapper.mapEntityToDTO(buyerRepository.save(buyer));
 
         }).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
-        };
-    
+    };
 
     @Override
     public BuyerDTO findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return buyerRepository.findById(id).map(buyer -> buyerMapper.mapEntityToDTO(buyer))
+                .orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
     }
 
     @Override
@@ -71,18 +70,18 @@ public class BuyerServiceImp implements IBuyerService{
 
     @Override
     public List<BuyerDTO> findAll() {
-       
-      List<Buyer> buyersList = buyerRepository.findAll();
 
-      if (buyersList.isEmpty()) {
+        List<Buyer> buyersList = buyerRepository.findAll();
+
+        if (buyersList.isEmpty()) {
             throw new EntityNotFoundException("Buyers not found");
-      }
+        }
 
-      return buyersList.stream().map(buyerMapper::mapEntityToDTO).toList();
+        return buyersList.stream().map(buyerMapper::mapEntityToDTO).toList();
     }
 
     @Override
     public Buyer findBuyerById(Long id) {
-       return buyerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
+        return buyerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
     }
 }

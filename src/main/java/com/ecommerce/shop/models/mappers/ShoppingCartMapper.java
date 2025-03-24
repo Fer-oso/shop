@@ -2,10 +2,11 @@ package com.ecommerce.shop.models.mappers;
 
 import org.modelmapper.ModelMapper;
 
+import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartBaseDTO;
 import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
 import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
 
-public class ShoppingCartMapper  implements IObjectMapper<ShoppingCart, ShoppingCartDTO>{
+public class ShoppingCartMapper implements IObjectMapper<ShoppingCart, ShoppingCartBaseDTO> {
 
     ModelMapper modelMapper;
 
@@ -14,8 +15,8 @@ public class ShoppingCartMapper  implements IObjectMapper<ShoppingCart, Shopping
     }
 
     @Override
-    public ShoppingCart mapDTOToEntity(ShoppingCartDTO shoppingCartDTO) {
-       return modelMapper.map(shoppingCartDTO, ShoppingCart.class);
+    public ShoppingCart mapDTOToEntity(ShoppingCartBaseDTO shoppingCartDTO) {
+        return modelMapper.map(shoppingCartDTO, ShoppingCart.class);
     }
 
     @Override
@@ -24,8 +25,8 @@ public class ShoppingCartMapper  implements IObjectMapper<ShoppingCart, Shopping
     }
 
     @Override
-    public void updateEntityFromDTO(ShoppingCartDTO shoppingCartDTO, ShoppingCart shoppingCart) {
-       modelMapper.map(shoppingCartDTO, shoppingCart);
+    public void updateEntityFromDTO(ShoppingCartBaseDTO shoppingCartDTO, ShoppingCart shoppingCart) {
+        modelMapper.map(shoppingCartDTO, shoppingCart);
     }
-    
+
 }

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ecommerce.shop.models.DTO.image.ImageDTO;
 import com.ecommerce.shop.models.entitys.image.Image;
 import com.ecommerce.shop.services.images.IImageService;
+import com.ecommerce.shop.services.images.cloudinary.CloudinaryService;
 
 @RestController
 @RequestMapping("${api.prefix}/images")
@@ -27,11 +28,14 @@ public class ImagesController {
 
     IImageService imageService;
 
-    public ImagesController(IImageService imageService) {
+    CloudinaryService cloudinaryService;
+
+    public ImagesController(IImageService imageService, CloudinaryService cloudinaryService) {
         this.imageService = imageService;
+        this.cloudinaryService = cloudinaryService;
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/upload/multiple")
     public ResponseEntity<?> saveImages(@RequestParam List<MultipartFile> files) {
 
         try {
@@ -43,7 +47,17 @@ public class ImagesController {
         }
     }
 
-    @GetMapping("/image/download/{imageId}")
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam List<MultipartFile> file) {
+        try {
+            List<ImageDTO> imageUrl = imageService.save(file);
+            return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) throws SQLException {
 
         Image image = imageService.findById(imageId);

@@ -3,9 +3,13 @@ package com.ecommerce.shop.controllers.mercadopago;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
+
 import com.ecommerce.shop.services.mercadopago.MercadoPagoService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mercadopago.resources.preference.PreferenceItem;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -24,9 +28,22 @@ public class MercadoPagoController {
     }
 
     @PostMapping(value = "/create-preference")
-    public ResponseEntity<?> postMethodName(@RequestBody List<PreferenceItem> preferenceItem) {
+    public ResponseEntity<?> createPreference(@RequestBody List<PreferenceItem> preferenceItem) {
 
         return ResponseEntity.status(HttpStatus.OK).body(mercadoPagoService.createPreference(preferenceItem));
+    }
+
+    @PostMapping("/payments/notifications")
+    public ResponseEntity<?> paymentStatus(@RequestBody JsonNode payment) throws Exception {
+
+        System.out.println("Esto viene de el checkout" + payment);
+
+        return ResponseEntity.ok().body(ResponseSuccessModel.builder()
+                .status("OK")
+                .code("200")
+                .response(mercadoPagoService.paymentStatus(payment))
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
 }

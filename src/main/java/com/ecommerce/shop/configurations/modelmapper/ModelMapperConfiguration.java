@@ -14,6 +14,7 @@ import com.ecommerce.shop.models.mappers.ShoppingCartMapper;
 import com.ecommerce.shop.models.mappers.UserLoginResponseMapper;
 import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.models.mappers.buyer.BuyerMapper;
+import com.ecommerce.shop.models.mappers.mercadopago.MPResponseMapper;
 import com.ecommerce.shop.models.mappers.product.ProductShoppingCartMapper;
 
 @Configuration
@@ -22,9 +23,9 @@ public class ModelMapperConfiguration {
     ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
-        .setMatchingStrategy(MatchingStrategies.LOOSE)
-        .setFieldMatchingEnabled(true)
-        .setFieldAccessLevel(AccessLevel.PRIVATE);
+                .setMatchingStrategy(MatchingStrategies.LOOSE)
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(AccessLevel.PRIVATE);
         return modelMapper;
     }
 
@@ -62,6 +63,7 @@ public class ModelMapperConfiguration {
     ProductShoppingCartMapper productShoppingCartMapper() {
         return new ProductShoppingCartMapper(modelMapper());
     }
+
     @Bean
     ShoppingCartMapper shoppingCartMapper() {
         return new ShoppingCartMapper(modelMapper());
@@ -72,4 +74,8 @@ public class ModelMapperConfiguration {
         return new UserLoginResponseMapper(modelMapper());
     }
 
+    @Bean
+    MPResponseMapper mpResponseMapper() {
+        return new MPResponseMapper(modelMapper());
+    }
 }

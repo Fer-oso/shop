@@ -11,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ecommerce.shop.models.DTO.image.ImageDTO;
 import com.ecommerce.shop.models.entitys.image.Image;
 import com.ecommerce.shop.models.mappers.ImageMapper;
-import com.ecommerce.shop.models.mappers.ProductMapper;
 
 import com.ecommerce.shop.repository.images.ImageRepository;
 import com.ecommerce.shop.services.files.FileService;
+import com.ecommerce.shop.services.images.cloudinary.CloudinaryService;
 import com.ecommerce.shop.services.images.exceptions.ImageNotFoundException;
 import com.ecommerce.shop.services.images.exceptions.ImageNotSelectedException;
 
@@ -30,14 +30,14 @@ public class ImageServiceImp implements IImageService {
 
     FileService fileService;
 
-    private static final String URL_DOWNLOAD = "/api/shop/images/image/download/";
+    CloudinaryService cloudinaryService;
 
-    public ImageServiceImp(ImageRepository imageRepository,
-            ImageMapper imageMapper,
-            FileService fileService) {
+    public ImageServiceImp(ImageRepository imageRepository, ImageMapper imageMapper, FileService fileService,
+            CloudinaryService cloudinaryService) {
         this.imageRepository = imageRepository;
         this.imageMapper = imageMapper;
         this.fileService = fileService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -76,15 +76,11 @@ public class ImageServiceImp implements IImageService {
                         .fileName(fileService.uniqueFileName(file))
                         .fileType(file.getContentType())
                         .image(new SerialBlob(file.getBytes()))
+                        .downloadUrl(cloudinaryService.uploadImage(
+                                file))
                         .build();
 
                 Image savedImage = imageRepository.save(image);
-
-                String downloadUrl = URL_DOWNLOAD + savedImage.getId();
-
-                savedImage.setDownloadUrl(downloadUrl);
-
-                imageRepository.save(savedImage);
 
                 fileService.saveInFolderImages(file);
 
@@ -138,13 +134,11 @@ public class ImageServiceImp implements IImageService {
                         .fileName(fileService.uniqueFileName(file))
                         .fileType(file.getContentType())
                         .image(new SerialBlob(file.getBytes()))
+                        .downloadUrl(cloudinaryService.uploadImage(
+                                file))
                         .build();
 
                 Image savedImage = imageRepository.save(image);
-
-                String downloadUrl = URL_DOWNLOAD + savedImage.getId();
-
-                savedImage.setDownloadUrl(downloadUrl);
 
                 fileService.saveInFolderImages(file);
 

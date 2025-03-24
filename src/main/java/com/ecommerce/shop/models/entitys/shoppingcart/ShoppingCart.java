@@ -21,23 +21,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@NoArgsConstructor@AllArgsConstructor
-@Getter@Setter
-@EqualsAndHashCode@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @Builder
 @Entity
 public class ShoppingCart {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id",referencedColumnName = "id")
+    @JoinColumn(name = "buyer_id", referencedColumnName = "id")
     private Buyer buyer;
 
     @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true)
-    @JoinTable(name = " shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"),inverseJoinColumns = @JoinColumn(name="product_id"))
+    @JoinTable(name = " shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<ProductShoppingCart> products;
 
     private int total;
