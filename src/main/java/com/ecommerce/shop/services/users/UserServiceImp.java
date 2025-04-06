@@ -12,13 +12,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.shop.models.DTO.users.UserDTO;
+import com.ecommerce.shop.models.entitys.image.Image;
 import com.ecommerce.shop.models.entitys.user.Role;
 import com.ecommerce.shop.models.entitys.user.User;
 import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
 import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.repository.users.UserRepository;
+import com.ecommerce.shop.services.images.IImageService;
 import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 import com.ecommerce.shop.services.users.exceptions.DataBaseAccessException;
 import com.ecommerce.shop.services.users.exceptions.DuplicateUsernameException;
@@ -36,22 +39,24 @@ public class UserServiceImp implements IUserService {
 
     UserRepository userRepository;
     IRoleService roleService;
+    IImageService imageService;
 
     PasswordEncoder passwordEncoder;
 
     UserMapper userMapper;
 
     public UserServiceImp(UserRepository userRepository,
-            IRoleService roleService,
+            IRoleService roleService, IImageService imageService,
             PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.imageService = imageService;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
     }
 
     @Override
-    public UserDTO save(UserDTO userDTO) {
+    public UserDTO save(UserDTO userDTO, List<MultipartFile> filesImage) {
 
         return Optional.of(userDTO)
                 .map(dtoUser -> {
@@ -61,6 +66,10 @@ public class UserServiceImp implements IUserService {
                     user.setRoles(checkAndSetRoleList(dtoUser));
 
                     user.setPassword(passwordEncoder.encode(dtoUser.getPassword()));
+
+                    List<Image> images = imageService.saveImage(filesImage);
+
+                    user.setProfileImages(images);
 
                     try {
 
@@ -121,7 +130,7 @@ public class UserServiceImp implements IUserService {
             user.getRoles().clear();
 
             userRepository.save(user);
-            
+
             userRepository.deleteById(id);
 
             return "User: " + user.getUsername() + " deleted succesfully with id: " + id;
