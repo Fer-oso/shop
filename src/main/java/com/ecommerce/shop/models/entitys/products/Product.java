@@ -1,5 +1,6 @@
 package com.ecommerce.shop.models.entitys.products;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ecommerce.shop.models.entitys.category.Category;
@@ -21,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,8 +53,9 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private int stock;
 
+    @Builder.Default
     @Column(name = "available")
-    private final boolean available = true;
+    private boolean available = true;
 
     @Column(name = "code", nullable = false)
     private String code;
@@ -69,4 +70,14 @@ public class Product {
     @OneToMany(orphanRemoval = true)
     @JoinTable(name = "product_image", joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
     private List<Image> images;
+
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 }
