@@ -17,7 +17,7 @@ public class OrderDTO {
 
     private BuyerDTO buyer;
 
-    private ShoppingCartBaseDTO productsList;
+    private ShoppingCartDTO productsList;
 
     private int total;
 }

@@ -59,48 +59,57 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDTO save(OrderDTO orderDTO) {
+    public ShoppingCartDTO save(ShoppingCartDTO orderDTO) {
 
         return Optional.of(orderDTO).map(dto -> {
 
-            Buyer buyer = buyerMapper.mapDTOToEntity(buyerService.save(orderDTO.getBuyer()));
+            // Buyer buyer =
+            // buyerMapper.mapDTOToEntity(buyerService.save(orderDTO.getBuyer()));
 
-            ShoppingCart shoppingCart = shoppingCartMapper.mapDTOToEntity(dto.getProductsList());
-
-            if (buyer.getShoppingCart() == null) {
-
-                buyer.setShoppingCart(new ArrayList<ShoppingCart>());
-            }
-
-            buyer.getShoppingCart().add(shoppingCart);
-
-            shoppingCart.setBuyer(buyer);
+            ShoppingCart shoppingCart = shoppingCartMapper.mapDTOToEntity(dto);
 
             shoppingCartRepository.save(shoppingCart);
 
-            List<ProductShoppingCart> productShoppingCartList = orderDTO.getProductsList().getProducts().stream()
-                    .map(productShoppingCartDTO -> {
+            // ShoppingCart shoppingCart = shoppingCartRepository.save(new ShoppingCart());
 
-                        Product product = productMapper
-                                .mapDTOToEntity(productService.findById(productShoppingCartDTO.getProduct().getId()));
-
-                        System.out.println("PRODUCTO ENCONTRADO" + product);
-
-                        ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
-                                .product(product)
-                                .quantity(productShoppingCartDTO.getQuantity())
-                                .subtotal(productShoppingCartDTO.getSubtotal())
-                                .build();
-
-                        return productShoppingCart;
-
-                    }).collect(Collectors.toList());
-
-            shoppingCart.setProducts(productShoppingCartList);
-
-            shoppingCart.setTotal(dto.getTotal());
-
-            shoppingCartRepository.save(shoppingCart);
+            /*
+             * if (buyer.getShoppingCart() == null) {
+             * 
+             * buyer.setShoppingCart(new ArrayList<ShoppingCart>());
+             * }
+             * 
+             * buyer.getShoppingCart().add(shoppingCart);
+             * 
+             * shoppingCart.setBuyer(buyer);
+             * 
+             * shoppingCartRepository.save(shoppingCart);
+             * 
+             * List<ProductShoppingCart> productShoppingCartList =
+             * orderDTO.getProducts().stream()
+             * .map(productShoppingCartDTO -> {
+             * 
+             * Product product = productMapper
+             * .mapDTOToEntity(productService.findById(productShoppingCartDTO.getProduct().
+             * getId()));
+             * 
+             * System.out.println("PRODUCTO ENCONTRADO" + product);
+             * 
+             * ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
+             * .product(product)
+             * .quantity(productShoppingCartDTO.getQuantity())
+             * .subtotal(productShoppingCartDTO.getSubtotal())
+             * .build();
+             * 
+             * return productShoppingCart;
+             * 
+             * }).collect(Collectors.toList());
+             * 
+             * shoppingCart.setProducts(productShoppingCartList);
+             * 
+             * shoppingCart.setTotal(dto.getTotal());
+             * 
+             * shoppingCartRepository.save(shoppingCart);
+             */
 
             return (shoppingCartMapper.mapEntityToDTO(shoppingCart));
 
@@ -108,9 +117,9 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDTO findById(Long id) {
+    public ShoppingCartDTO findById(String id) {
 
-        return shoppingCartRepository.findById(id).map(shoppingCartMapper::mapEntityToDTO)
+        return shoppingCartRepository.findByShoppingCartId(id).map(shoppingCartMapper::mapEntityToDTO)
                 .orElseThrow(() -> new UnsupportedOperationException("ShoppingCart not found"));
     }
 

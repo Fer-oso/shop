@@ -47,26 +47,30 @@ public class LoginServiceImp implements ILoginService {
     @Override
     public UserLoginResponseDTO loginWithUsernameAndPassword(CredentialsUser credentialsUser) {
 
-         User user = (User) userService.loadUserByUsername(credentialsUser.getUsername());
+        User user = (User) userService.loadUserByUsername(credentialsUser.getUsername());
+
+        System.out.println("Usuario es " + user);
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsUser.getPassword()), user.getPassword())) {
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(),
+                    user.getPassword(), user.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String token = jwtUtils.createToken(authentication);
 
-             Set<RoleDTO> roles = Set.copyOf(user.getRoles().stream().map(role ->roleMapper.mapEntityToDTO(role)).toList());
+            Set<RoleDTO> roles = Set
+                    .copyOf(user.getRoles().stream().map(role -> roleMapper.mapEntityToDTO(role)).toList());
 
-             UserLoginResponseDTO userLoginResponseDTO = UserLoginResponseDTO.builder()
-             .id(user.getId())
-             .username(user.getUsername())
-             .password(user.getPassword())
-             .roles(roles)
-             .token(token)
-             .build();
-             
+            UserLoginResponseDTO userLoginResponseDTO = UserLoginResponseDTO.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .roles(roles)
+                    .token(token)
+                    .build();
+
             return userLoginResponseDTO;
         }
 
