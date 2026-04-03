@@ -1,5 +1,6 @@
 package com.ecommerce.shop.services.buyer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
 import com.ecommerce.shop.models.entitys.buyer.Buyer;
+import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
 import com.ecommerce.shop.models.entitys.user.User;
 import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.models.mappers.buyer.BuyerMapper;
@@ -43,6 +45,11 @@ public class BuyerServiceImp implements IBuyerService {
 
             Buyer buyer = buyerMapper.mapDTOToEntity(dto);
 
+            if (buyer.getShoppingCart() == null) {
+
+                buyer.setShoppingCart(new ArrayList<ShoppingCart>());
+            }
+
             buyer.setUser(user);
 
             return buyerMapper.mapEntityToDTO(buyerRepository.save(buyer));
@@ -57,10 +64,16 @@ public class BuyerServiceImp implements IBuyerService {
     }
 
     @Override
-    public BuyerDTO update(BuyerDTO t, Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
+    public BuyerDTO update(BuyerDTO buyerDTO, Long id) {
+
+        return buyerRepository.findById(id).map(buyer -> {
+
+            buyer = buyerMapper.mapDTOToEntity(buyerDTO);
+
+            return buyerMapper.mapEntityToDTO(buyerRepository.save(buyer));
+
+        }).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
+    };
 
     @Override
     public String deleteById(Long id) {
@@ -83,5 +96,18 @@ public class BuyerServiceImp implements IBuyerService {
     @Override
     public Buyer findBuyerById(Long id) {
         return buyerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
+    }
+
+    @Override
+    public List<BuyerDTO> findAllByUser_id(Long userId) {
+
+        List<Buyer> buyersList = buyerRepository.findAllByUser_id(userId);
+
+        if (buyersList.isEmpty()) {
+            throw new EntityNotFoundException("Buyers not found");
+        }
+
+        return buyersList.stream().map(buyerMapper::mapEntityToDTO).toList();
+
     }
 }

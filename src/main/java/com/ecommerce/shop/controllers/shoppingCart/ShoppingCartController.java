@@ -3,14 +3,15 @@ package com.ecommerce.shop.controllers.shoppingCart;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.shop.models.DTO.shoppingcart.OrderDTO;
 import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
 import com.ecommerce.shop.services.shoppingcart.IShoppingCartService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -34,8 +35,20 @@ public class ShoppingCartController {
         return ResponseEntity.ok(shoppingCartService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findShoppingCartById(@PathVariable String id) {
-        return ResponseEntity.ok(shoppingCartService.findById(id));
+    @GetMapping("/{shoppingCartId}")
+    public ResponseEntity<?> findByShoppingCartId(@PathVariable String shoppingCartId) {
+        return ResponseEntity.ok(shoppingCartService.findByShoppingCartId(shoppingCartId));
+    }
+
+    @PutMapping()
+    public ResponseEntity<?> updateShoppingCart(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+
+        return ResponseEntity.ok(shoppingCartService.update(shoppingCartDTO, shoppingCartDTO.getShoppingCartId()));
+    }
+
+    @DeleteMapping("/{shoppingCartId}")
+    public ResponseEntity<?> deleteShoppingCart(@PathVariable String shoppingCartId) {
+
+        return ResponseEntity.ok(shoppingCartService.deleteById(shoppingCartId));
     }
 }

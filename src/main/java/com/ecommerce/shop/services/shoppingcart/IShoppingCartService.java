@@ -8,11 +8,11 @@ public interface IShoppingCartService {
 
     ShoppingCartDTO save(ShoppingCartDTO orderDTO);
 
-    ShoppingCartDTO findById(String id);
+    ShoppingCartDTO findByShoppingCartId(String id);
 
-    ShoppingCartDTO update(ShoppingCartDTO shoppingCartDTO, Long id);
+    ShoppingCartDTO update(ShoppingCartDTO shoppingCartDTO, String id);
 
-    String deleteById(Long id);
+    String deleteById(String id);
 
     List<ShoppingCartDTO> findAll();
 }

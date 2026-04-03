@@ -112,7 +112,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173/");
         configuration.setAllowedOrigins(List.of("http://localhost:5173/",
-                "https://contacting-amenities-seat-drug.trycloudflare.com"));
+                "https://passing-alt-monitors-wearing.trycloudflare.com"));
         configuration.addAllowedMethod("*"); // Permitir todos los métodos
         configuration.addAllowedHeader("*"); // Permitir todos los headers
         configuration.setAllowCredentials(true);

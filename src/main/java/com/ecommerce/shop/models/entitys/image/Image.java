@@ -1,12 +1,10 @@
 package com.ecommerce.shop.models.entitys.image;
 
-import java.sql.Blob;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,6 +28,7 @@ public class Image {
     private long id;
     private String fileName;
     private String fileType;
-    private Blob image;
+    @Lob
+    private byte[] image;
     private String downloadUrl;
 }

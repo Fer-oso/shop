@@ -15,26 +15,25 @@ import com.ecommerce.shop.services.buyer.IBuyerService;
 @RestController
 @RequestMapping("${api.prefix}/buyer")
 public class BuyerController {
-    
+
     IBuyerService buyerService;
 
     public BuyerController(IBuyerService buyerService) {
         this.buyerService = buyerService;
     }
 
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody BuyerDTO buyerDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(buyerService.save(buyerDTO));
+    }
 
-   @PostMapping
-   public ResponseEntity<?> save(@RequestBody BuyerDTO buyerDTO){
-    return ResponseEntity.status(HttpStatus.CREATED).body(buyerService.save(buyerDTO));
-   }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(buyerService.findAllByUser_id(id));
+    }
 
-   @GetMapping("/{id}")
-   public ResponseEntity<?> findById(@PathVariable Long id){
-    return ResponseEntity.status(HttpStatus.OK).body(buyerService.findById(id));
-   }
-
-   @GetMapping
-   public ResponseEntity<?> findAll(){
-    return ResponseEntity.status(HttpStatus.OK).body(buyerService.findAll());
-   }
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(buyerService.findAll());
+    }
 }

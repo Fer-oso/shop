@@ -1,12 +1,10 @@
 package com.ecommerce.shop.models.DTO.shoppingcart;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 import lombok.ToString;
 
-@Getter
-@Setter
 @ToString
+@Builder
 public class ShoppingCartDTO extends ShoppingCartBaseDTO {
 
 }

@@ -63,7 +63,12 @@ public class ImagesController {
         Image image = imageService.findById(imageId);
 
         ByteArrayResource resource = new ByteArrayResource(
-                image.getImage().getBytes(1, (int) image.getImage().length()));
+                image.getImage());
+
+        /*
+         * ByteArrayResource resource = new ByteArrayResource(
+         * image.getImage().getBytes(1, (int) image.getImage().length()));
+         */
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.parseMediaType(image.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
@@ -77,7 +82,7 @@ public class ImagesController {
             Image image = imageService.findById(imageId);
 
             ByteArrayResource resource = new ByteArrayResource(
-                    image.getImage().getBytes(1, (int) image.getImage().length()));
+                    image.getImage());
 
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.parseMediaType(image.getFileType()))
                     .body(resource);

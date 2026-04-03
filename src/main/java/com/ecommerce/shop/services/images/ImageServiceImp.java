@@ -1,10 +1,7 @@
 package com.ecommerce.shop.services.images;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
-import javax.sql.rowset.serial.SerialBlob;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,7 +72,7 @@ public class ImageServiceImp implements IImageService {
                 Image image = Image.builder()
                         .fileName(fileService.uniqueFileName(file))
                         .fileType(file.getContentType())
-                        .image(new SerialBlob(file.getBytes()))
+                        .image((file.getBytes()))
                         .downloadUrl(cloudinaryService.uploadImage(
                                 file))
                         .build();
@@ -86,7 +83,7 @@ public class ImageServiceImp implements IImageService {
 
                 return imageMapper.mapEntityToDTO(savedImage);
 
-            } catch (IOException | SQLException e) {
+            } catch (IOException e) {
 
                 throw new RuntimeException(e.getMessage());
             }
@@ -104,11 +101,11 @@ public class ImageServiceImp implements IImageService {
 
             image.setFileType(fileImage.getContentType());
 
-            image.setImage(new SerialBlob(fileImage.getBytes()));
+            image.setImage(fileImage.getBytes());
 
             return imageRepository.save(image);
 
-        } catch (SQLException | IOException e) {
+        } catch (IOException e) {
 
             throw new RuntimeException(e.getMessage());
         }
@@ -133,7 +130,7 @@ public class ImageServiceImp implements IImageService {
                 Image image = Image.builder()
                         .fileName(fileService.uniqueFileName(file))
                         .fileType(file.getContentType())
-                        .image(new SerialBlob(file.getBytes()))
+                        .image(file.getBytes())
                         .downloadUrl(cloudinaryService.uploadImage(
                                 file))
                         .build();
@@ -144,7 +141,7 @@ public class ImageServiceImp implements IImageService {
 
                 return imageRepository.save(savedImage);
 
-            } catch (IOException | SQLException e) {
+            } catch (IOException e) {
 
                 throw new RuntimeException(e.getMessage());
             }

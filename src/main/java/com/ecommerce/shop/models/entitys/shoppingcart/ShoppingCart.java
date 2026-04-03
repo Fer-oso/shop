@@ -5,6 +5,7 @@ import java.util.List;
 import com.ecommerce.shop.models.entitys.buyer.Buyer;
 import com.ecommerce.shop.models.entitys.products.ProductShoppingCart;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,14 +36,15 @@ public class ShoppingCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String shoppingCartId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "buyer_id", referencedColumnName = "id")
     private Buyer buyer;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = " shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_shopping_cart__id"))
     private List<ProductShoppingCart> products;
 
     private int total;

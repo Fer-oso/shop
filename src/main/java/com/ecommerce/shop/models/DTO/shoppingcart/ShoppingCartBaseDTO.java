@@ -5,10 +5,8 @@ import java.util.List;
 import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
 import com.ecommerce.shop.models.DTO.product.ProductShoppingCartDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +19,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode
-@Builder
-public class ShoppingCartBaseDTO {
+public abstract class ShoppingCartBaseDTO {
 
     private String shoppingCartId;
 

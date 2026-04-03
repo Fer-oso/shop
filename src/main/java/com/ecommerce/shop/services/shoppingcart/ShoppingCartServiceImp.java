@@ -1,13 +1,12 @@
 package com.ecommerce.shop.services.shoppingcart;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.shop.models.DTO.shoppingcart.OrderDTO;
+import com.ecommerce.shop.models.DTO.product.ProductShoppingCartDTO;
 import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
 import com.ecommerce.shop.models.entitys.buyer.Buyer;
 import com.ecommerce.shop.models.entitys.products.Product;
@@ -59,57 +58,25 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDTO save(ShoppingCartDTO orderDTO) {
+    public ShoppingCartDTO save(ShoppingCartDTO shoppingCartDTO) {
 
-        return Optional.of(orderDTO).map(dto -> {
+        return Optional.of(shoppingCartDTO).map(dto -> {
 
-            // Buyer buyer =
-            // buyerMapper.mapDTOToEntity(buyerService.save(orderDTO.getBuyer()));
+            ShoppingCart shoppingCart = shoppingCartRepository
+                    .save(ShoppingCart.builder().shoppingCartId(dto.getShoppingCartId()).build());
 
-            ShoppingCart shoppingCart = shoppingCartMapper.mapDTOToEntity(dto);
+            Buyer buyer = buyerMapper.mapDTOToEntity(buyerService.save(dto.getBuyer()));
+
+            shoppingCart.setBuyer(buyer);
+
+            List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
+                    shoppingCartDTO.getProducts());
+
+            shoppingCart.setProducts(productShoppingCartList);
+
+            shoppingCart.setTotal(dto.getTotal());
 
             shoppingCartRepository.save(shoppingCart);
-
-            // ShoppingCart shoppingCart = shoppingCartRepository.save(new ShoppingCart());
-
-            /*
-             * if (buyer.getShoppingCart() == null) {
-             * 
-             * buyer.setShoppingCart(new ArrayList<ShoppingCart>());
-             * }
-             * 
-             * buyer.getShoppingCart().add(shoppingCart);
-             * 
-             * shoppingCart.setBuyer(buyer);
-             * 
-             * shoppingCartRepository.save(shoppingCart);
-             * 
-             * List<ProductShoppingCart> productShoppingCartList =
-             * orderDTO.getProducts().stream()
-             * .map(productShoppingCartDTO -> {
-             * 
-             * Product product = productMapper
-             * .mapDTOToEntity(productService.findById(productShoppingCartDTO.getProduct().
-             * getId()));
-             * 
-             * System.out.println("PRODUCTO ENCONTRADO" + product);
-             * 
-             * ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
-             * .product(product)
-             * .quantity(productShoppingCartDTO.getQuantity())
-             * .subtotal(productShoppingCartDTO.getSubtotal())
-             * .build();
-             * 
-             * return productShoppingCart;
-             * 
-             * }).collect(Collectors.toList());
-             * 
-             * shoppingCart.setProducts(productShoppingCartList);
-             * 
-             * shoppingCart.setTotal(dto.getTotal());
-             * 
-             * shoppingCartRepository.save(shoppingCart);
-             */
 
             return (shoppingCartMapper.mapEntityToDTO(shoppingCart));
 
@@ -117,22 +84,47 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDTO findById(String id) {
+    public ShoppingCartDTO findByShoppingCartId(String shoppingCartId) {
 
-        return shoppingCartRepository.findByShoppingCartId(id).map(shoppingCartMapper::mapEntityToDTO)
+        return shoppingCartRepository.findByShoppingCartId(
+                shoppingCartId).map(shoppingCartMapper::mapEntityToDTO)
                 .orElseThrow(() -> new UnsupportedOperationException("ShoppingCart not found"));
     }
 
     @Override
-    public ShoppingCartDTO update(ShoppingCartDTO t, Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public ShoppingCartDTO update(ShoppingCartDTO shoppingCartDTO, String id) {
+
+        return shoppingCartRepository.findByShoppingCartId(id).map(shoppingCart -> {
+
+            List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
+                    shoppingCartDTO.getProducts());
+
+            Buyer buyer = buyerMapper.mapDTOToEntity(
+                    buyerService.update(shoppingCartDTO.getBuyer(), shoppingCartDTO.getBuyer().getId()));
+
+            shoppingCart.setBuyer(buyer);
+
+            shoppingCart.setProducts(productShoppingCartList);
+
+            shoppingCart.setTotal(shoppingCartDTO.getTotal());
+
+            return shoppingCartMapper.mapEntityToDTO(shoppingCartRepository.save(shoppingCart));
+
+        }).orElseThrow(() -> new UnsupportedOperationException("ShoppingCart not found"));
     }
 
     @Override
-    public String deleteById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    public String deleteById(String shoppingCartId) {
+
+        return shoppingCartRepository.findByShoppingCartId(shoppingCartId).map(shoppingCart -> {
+
+            shoppingCartRepository.delete(shoppingCart);
+
+            return "Shopping Cart: " + shoppingCart.getShoppingCartId() + " deleted succesfully with id: "
+                    + shoppingCartId;
+
+        }).orElseThrow(
+                () -> new UnsupportedOperationException("Shopping Cart not found with that id: " + shoppingCartId));
     }
 
     @Override
@@ -140,6 +132,28 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
         return shoppingCartRepository.findAll().stream()
                 .map(shoppingCart -> shoppingCartMapper.mapEntityToDTO(shoppingCart)).collect(Collectors.toList());
+    }
+
+    private List<ProductShoppingCart> createProductShoppingCartList(
+            List<ProductShoppingCartDTO> productShoppingCartListDTO) {
+
+        List<ProductShoppingCart> shoppingCartList = productShoppingCartListDTO.stream()
+                .map(productShoppingCartDTO -> {
+
+                    Product product = productMapper
+                            .mapDTOToEntity(productService.findById(productShoppingCartDTO.getProduct().getId()));
+
+                    ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
+                            .product(product)
+                            .quantity(productShoppingCartDTO.getQuantity())
+                            .subtotal(productShoppingCartDTO.getSubtotal())
+                            .build();
+
+                    return productShoppingCart;
+
+                }).collect(Collectors.toList());
+
+        return shoppingCartList;
     }
 
 }

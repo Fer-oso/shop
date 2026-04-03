@@ -79,5 +79,4 @@ public class ShopApplication {
 			productRepository.saveAll(productsList.getProductsList());
 		};
 	}
-
 }
