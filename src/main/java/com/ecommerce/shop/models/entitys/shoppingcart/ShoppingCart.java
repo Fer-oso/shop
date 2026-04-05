@@ -39,6 +39,10 @@ public class ShoppingCart {
     @Column(unique = true)
     private String shoppingCartId;
 
+    public String getShoppingCartId() {
+        return shoppingCartId;
+    }
+
     @ManyToOne
     @JoinColumn(name = "buyer_id", referencedColumnName = "id")
     private Buyer buyer;
