@@ -18,11 +18,11 @@ import lombok.Setter;
 public class ProductShoppingCartDTO {
 
     private Long id;
-    
-    @JsonIgnoreProperties({"stock","available"})
+
+    @JsonIgnoreProperties({ "stock", "available" })
     private ProductDTO product;
 
-    private int quantity;
+    private Integer quantity;
 
-    private int subtotal;
+    private Integer subtotal;
 }

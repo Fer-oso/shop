@@ -25,9 +25,4 @@ public class MPResponseMapper implements IObjectMapper<MPResponse, MPResponseDTO
         return modelMapper.map(entity, MPResponseDTO.class);
     }
 
-    @Override
-    public void updateEntityFromDTO(MPResponseDTO dto, MPResponse entity) {
-
-    }
-
 }

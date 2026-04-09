@@ -1,5 +1,6 @@
 package com.ecommerce.shop;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
 import com.ecommerce.shop.repository.category.CategoryRepository;
 import com.ecommerce.shop.repository.products.ProductRepository;
 import com.ecommerce.shop.repository.users.UserRepository;
+import com.ecommerce.shop.repository.users.permissions.PermissionRepository;
+import com.ecommerce.shop.repository.users.roles.RoleRepository;
 import com.ecommerce.shop.utils.products.ProductsList;
 
 @SpringBootApplication
@@ -28,29 +31,36 @@ public class ShopApplication {
 
 	@Bean
 	CommandLineRunner init(UserRepository userRepository, CategoryRepository categoryRepository,
-			ProductRepository productRepository) {
+			ProductRepository productRepository, PermissionRepository permissionRepository,
+			RoleRepository roleRepository) {
 		return args -> {
-			Permission createPermission = Permission.builder().name("CREATE").build();
 
-			Permission updatePermission = Permission.builder().name("UPDATE").build();
+			permissionRepository.saveAll(List.of(
+					Permission.builder().name("CREATE").build(),
+					Permission.builder().name("UPDATE").build(),
+					Permission.builder().name("READ").build(),
+					Permission.builder().name("DELETE").build()));
 
-			Permission readPermission = Permission.builder().name("READ").build();
-
-			Permission deletePermission = Permission.builder().name("DELETE").build();
+			Permission createPermission = permissionRepository.findByName("CREATE").orElseThrow();
+			Permission updatePermission = permissionRepository.findByName("UPDATE").orElseThrow();
+			Permission readPermission = permissionRepository.findByName("READ").orElseThrow();
+			Permission deletePermission = permissionRepository.findByName("DELETE").orElseThrow();
 
 			Role roleAdmin = Role.builder().roleName(ROLE_NAME.ADMIN)
-					.permissions(Set.of(createPermission, updatePermission, readPermission,
-							deletePermission))
+					.permissions(new HashSet<>(List.of(createPermission, updatePermission, readPermission,
+							deletePermission)))
 					.build();
 
 			Role roleUser = Role.builder().roleName(ROLE_NAME.USER)
-					.permissions(Set.of(createPermission, updatePermission, readPermission,
-							deletePermission))
+					.permissions(new HashSet<>(List.of(createPermission, updatePermission, readPermission,
+							deletePermission)))
 					.build();
 
 			Role roleInvited = Role.builder().roleName(ROLE_NAME.INVITED)
-					.permissions(Set.of(readPermission))
+					.permissions(new HashSet<>(List.of(readPermission)))
 					.build();
+
+			roleRepository.saveAll(List.of(roleAdmin, roleUser, roleInvited));
 
 			User userAdmin = User.builder().username("ferAdmin").password(new BCryptPasswordEncoder().encode("1234"))
 					.roles(Set.of(roleAdmin))

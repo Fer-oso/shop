@@ -39,10 +39,6 @@ public class ShoppingCart {
     @Column(unique = true)
     private String shoppingCartId;
 
-    public String getShoppingCartId() {
-        return shoppingCartId;
-    }
-
     @ManyToOne
     @JoinColumn(name = "buyer_id", referencedColumnName = "id")
     private Buyer buyer;
@@ -51,5 +47,5 @@ public class ShoppingCart {
     @JoinTable(name = "shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_shopping_cart__id"))
     private List<ProductShoppingCart> products;
 
-    private int total;
+    private Integer total;
 }

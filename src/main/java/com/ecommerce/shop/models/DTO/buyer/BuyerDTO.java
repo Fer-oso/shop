@@ -32,7 +32,7 @@ public class BuyerDTO {
     private String address;
 
     @JsonProperty("phonenumber")
-    private int phoneNumber;
+    private Integer phoneNumber;
 
     @JsonProperty("shopping-cart")
     @JsonIgnoreProperties("buyer")

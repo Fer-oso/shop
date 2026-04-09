@@ -30,9 +30,9 @@ public class ProductDTO {
 
     private String description;
 
-    private int price;
+    private Integer price;
 
-    private int stock;
+    private Integer stock;
 
     private boolean available;
 
@@ -44,7 +44,7 @@ public class ProductDTO {
 
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt ;
+    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 }
