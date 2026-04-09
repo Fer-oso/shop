@@ -52,10 +52,10 @@ public class Product {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private int price;
+    private Integer price;
 
     @Column(name = "stock", nullable = false)
-    private int stock;
+    private Integer stock;
 
     @Builder.Default
     @Column(name = "available")

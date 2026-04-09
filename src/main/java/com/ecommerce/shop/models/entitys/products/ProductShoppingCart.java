@@ -23,7 +23,7 @@ import lombok.ToString;
 @Builder
 @Entity
 public class ProductShoppingCart {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,7 @@ public class ProductShoppingCart {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
-    private int quantity;
+    private Integer quantity;
 
-    private int subtotal;
+    private Integer subtotal;
 }

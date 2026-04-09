@@ -23,9 +23,4 @@ public class ImageMapper implements IObjectMapper<Image, ImageDTO> {
         return modelMapper.map(image, ImageDTO.class);
     }
 
-    @Override
-    public void updateEntityFromDTO(ImageDTO imageDTO, Image image) {
-        modelMapper.map(imageDTO, image);
-    }
-
 }

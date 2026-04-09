@@ -23,11 +23,4 @@ public class UserLoginResponseMapper implements IObjectMapper<User, UserLoginRes
     public UserLoginResponseDTO mapEntityToDTO(User entity) {
         return modelMapper.map(entity, UserLoginResponseDTO.class);
     }
-
-    @Override
-    public void updateEntityFromDTO(UserLoginResponseDTO dto, User entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDTO'");
-    }
-
 }

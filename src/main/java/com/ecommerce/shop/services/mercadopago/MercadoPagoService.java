@@ -1,16 +1,23 @@
 package com.ecommerce.shop.services.mercadopago;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.ecommerce.shop.models.DTO.mercadopago.PaymentOrderDTO;
 import com.ecommerce.shop.models.mappers.mercadopago.MPResponseMapper;
+import com.ecommerce.shop.services.utils.mercadopago.MercadoPagoUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.common.PhoneRequest;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -20,6 +27,8 @@ import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
+import com.mercadopago.net.MPRequest;
+import com.mercadopago.resources.common.Phone;
 import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
 import com.mercadopago.resources.preference.PreferenceItem;
@@ -39,13 +48,14 @@ public class MercadoPagoService {
         @Value("${mercadopago.accesstoken}")
         private String accesToken;
 
-        public String createPreference(List<PreferenceItem> preferenceItems) {
+        public String createPreference(PaymentOrderDTO paymentOrder) {
+
+                System.out.println("esto es paymentOrder para verificar datos: " + paymentOrder);
 
                 MercadoPagoConfig.setAccessToken(accesToken);
-
                 try {
 
-                        List<PreferenceItemRequest> items = preferenceItems.stream().map(preferenceItem -> {
+                        List<PreferenceItemRequest> items = paymentOrder.getProducts().stream().map(preferenceItem -> {
 
                                 PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
 
@@ -53,6 +63,7 @@ public class MercadoPagoService {
                                                 .quantity(preferenceItem.getQuantity())
                                                 .unitPrice(preferenceItem.getUnitPrice())
                                                 .description(preferenceItem.getDescription())
+                                                .categoryId(preferenceItem.getCategoryId())
                                                 .pictureUrl(preferenceItem.getPictureUrl())
                                                 .currencyId("ARS")
                                                 .build();
@@ -62,25 +73,26 @@ public class MercadoPagoService {
                         }).collect(Collectors.toList());
 
                         PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                                        .success(
-                                                        "https://insert-nice-raise-occupations.trycloudflare.com/shopping-cart/payment-status?status=success")
-                                        .pending(
-                                                        "https://insert-nice-raise-occupations.trycloudflare.com/shopping-cart/payment-status?status=success")
-                                        .failure(
-                                                        "https://insert-nice-raise-occupations.trycloudflare.com/shopping-cart/payment-status?status=success")
+                                        .success("https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=success")
+                                        .pending("https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=pending")
+                                        .failure("https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=failure")
                                         .build();
 
                         PreferencePayerRequest payer = PreferencePayerRequest.builder()
-                                        .name("Fernando Adrian")
-                                        .surname("Osorio")
-                                        .email("osorio.f@outlook.es")
+                                        .name(paymentOrder.getBuyer().getFirstname())
+                                        .surname(paymentOrder.getBuyer().getLastname())
+                                        .email(paymentOrder.getBuyer().getEmail())
+                                        .phone(paymentOrder.getBuyer().getPhone())
                                         .build();
 
                         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                                        .externalReference(accesToken)
                                         .items(items)
                                         .payer(payer)
+                                        .externalReference(paymentOrder.getShoppingCartId())
                                         .backUrls(backUrls)
-                                        // .notificationUrl("https://cicada-open-partly.ngrok-free.app/api/shop/mercadopago/payments/notifications")
+                                        .notificationUrl(
+                                                        "https://945f-2800-810-748-86f9-d4b8-1d9d-d532-12b7.ngrok-free.app/api/shop/mercadopago/payments/notifications")
                                         .autoReturn("approved")
                                         .purpose("wallet_purchase")
                                         .build();
@@ -96,42 +108,35 @@ public class MercadoPagoService {
                 }
         }
 
-        public JsonNode paymentStatus(JsonNode paymentNotification) throws Exception {
+        public Long paymentStatus(ObjectNode paymentNotification) throws Exception {
+
+                Long paymentId = MercadoPagoUtils.extractPaymentId(paymentNotification);
+
+                if (paymentId == null)
+                        return null; // merchant_order u otro caso sin ID
 
                 try {
 
-                        MercadoPagoConfig.setAccessToken(accesToken);
-
-                        if (paymentNotification == null) {
-                                throw new IllegalArgumentException("PaymentNotification is null");
-                        }
-
-                        if (paymentNotification.get("id") == null) {
-                                throw new IllegalArgumentException("El ID del pago no es válido: " +
-                                                paymentNotification.get("id"));
-                        }
-
-                        Long paymentId = Long.parseLong(paymentNotification.get("data").get("id").asText());
-
+                        System.out.println("Obteniendo detalles del pago con ID: " + paymentId);
                         MercadoPagoConfig.setAccessToken(accesToken);
 
                         PaymentClient client = new PaymentClient();
-
                         Payment response = client.get(paymentId, MPRequestOptions.createDefault());
 
-                        ObjectMapper objectMapper = new ObjectMapper();
+                        // System.out.println("esta es la response: " +
+                        // response.getResponse().getContent());
 
+                        ObjectMapper objectMapper = new ObjectMapper();
                         JsonNode jsonNode = objectMapper.readTree(response.getResponse().getContent());
 
-                        String formatedString = objectMapper.writerWithDefaultPrettyPrinter()
-                                        .writeValueAsString(jsonNode);
+                        System.out.println("esta es la respuesta: "
+                                        + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode));
 
-                        System.out.println(formatedString);
-                        return jsonNode;
+                        return paymentId;
 
                 } catch (Exception e) {
                         throw new RuntimeException(e.getMessage());
                 }
-
         }
+
 }

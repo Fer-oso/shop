@@ -47,5 +47,5 @@ public class ShoppingCart {
     @JoinTable(name = "shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_shopping_cart__id"))
     private List<ProductShoppingCart> products;
 
-    private int total;
+    private Integer total;
 }

@@ -18,7 +18,7 @@ public class ProductShoppingCartMapper implements IObjectMapper<ProductShoppingC
 
     @Override
     public ProductShoppingCart mapDTOToEntity(ProductShoppingCartDTO productShoppingCartDTO) {
-        
+
         return modelMapper.map(productShoppingCartDTO, ProductShoppingCart.class);
     }
 
@@ -26,12 +26,5 @@ public class ProductShoppingCartMapper implements IObjectMapper<ProductShoppingC
     public ProductShoppingCartDTO mapEntityToDTO(ProductShoppingCart productShoppingCart) {
         return modelMapper.map(productShoppingCart, ProductShoppingCartDTO.class);
     }
-
-    @Override
-    public void updateEntityFromDTO(ProductShoppingCartDTO dto, ProductShoppingCart entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDTO'");
-    }
-
 
 }

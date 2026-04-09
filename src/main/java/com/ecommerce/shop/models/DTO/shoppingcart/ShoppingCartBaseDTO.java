@@ -26,7 +26,7 @@ public abstract class ShoppingCartBaseDTO {
     @JsonIgnoreProperties("shopping-cart")
     private BuyerDTO buyer;
 
-    private int total;
+    private Integer total;
 
     private List<ProductShoppingCartDTO> products;
 }

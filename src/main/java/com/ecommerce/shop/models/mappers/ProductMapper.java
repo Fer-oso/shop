@@ -23,9 +23,4 @@ public class ProductMapper implements IObjectMapper<Product, ProductDTO> {
         return modelMapper.map(entity, ProductDTO.class);
     }
 
-    @Override
-    public void updateEntityFromDTO(ProductDTO productDTO, Product product) {
-        modelMapper.map(productDTO, product);
-    }
-
 }

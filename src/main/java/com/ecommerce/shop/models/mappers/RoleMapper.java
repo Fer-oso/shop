@@ -6,8 +6,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import com.ecommerce.shop.models.DTO.users.RoleDTO;
 import com.ecommerce.shop.models.entitys.user.Role;
 
-
-public class RoleMapper implements IObjectMapper<Role,RoleDTO>{
+public class RoleMapper implements IObjectMapper<Role, RoleDTO> {
 
     ModelMapper modelMapper;
 
@@ -26,8 +25,4 @@ public class RoleMapper implements IObjectMapper<Role,RoleDTO>{
         return modelMapper.map(role, RoleDTO.class);
     }
 
-    @Override
-     public void updateEntityFromDTO(RoleDTO roleDTO, Role role) {
-        modelMapper.map(roleDTO, role);
-    }
 }

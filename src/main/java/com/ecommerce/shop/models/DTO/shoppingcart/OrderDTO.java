@@ -15,9 +15,7 @@ import lombok.ToString;
 @Builder
 public class OrderDTO {
 
-    private BuyerDTO buyer;
-
     private ShoppingCartDTO productsList;
 
-    private int total;
+    private Integer total;
 }

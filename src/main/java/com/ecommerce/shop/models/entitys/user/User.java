@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ecommerce.shop.models.entitys.image.Image;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,7 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 @Entity
 @Table(name = "users")
@@ -60,8 +59,7 @@ public class User implements UserDetails {
     @Column(name = "credentials_non_expired")
     private boolean credentialsNonExpired;
 
-    @Column(name = "roles", nullable = false)
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
@@ -70,5 +68,6 @@ public class User implements UserDetails {
 
     @OneToMany(orphanRemoval = true)
     @JoinTable(name = "user_image", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
+
     private List<Image> profileImages;
 }

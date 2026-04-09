@@ -25,9 +25,9 @@ public class ShoppingCartController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createShoppingCart(@RequestBody ShoppingCartDTO shoppingCart) {
+    public ResponseEntity<?> createShoppingCart(@RequestBody ShoppingCartDTO shoppingCartDTO) {
 
-        return ResponseEntity.ok(shoppingCartService.save(shoppingCart));
+        return ResponseEntity.ok(shoppingCartService.save(shoppingCartDTO));
     }
 
     @GetMapping()

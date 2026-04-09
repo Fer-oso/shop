@@ -24,9 +24,4 @@ public class UserMapper implements IObjectMapper<User, UserDTO> {
     public UserDTO mapEntityToDTO(User entity) {
         return modelMapper.map(entity, UserDTO.class);
     }
-
-    @Override
-    public void updateEntityFromDTO(UserDTO userDTO, User user) {
-        modelMapper.map(userDTO, user);
-    }
 }

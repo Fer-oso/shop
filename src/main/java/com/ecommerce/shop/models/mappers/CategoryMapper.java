@@ -23,9 +23,4 @@ public class CategoryMapper implements IObjectMapper<Category, CategoryDTO> {
         return modelMapper.map(category, CategoryDTO.class);
     }
 
-    @Override
-    public void updateEntityFromDTO(CategoryDTO categoryDTO, Category category) {
-        modelMapper.map(categoryDTO, category);
-    }
-
 }

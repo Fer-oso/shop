@@ -23,10 +23,4 @@ public class ShoppingCartMapper implements IObjectMapper<ShoppingCart, ShoppingC
     public ShoppingCartDTO mapEntityToDTO(ShoppingCart shoppingCart) {
         return modelMapper.map(shoppingCart, ShoppingCartDTO.class);
     }
-
-    @Override
-    public void updateEntityFromDTO(ShoppingCartBaseDTO shoppingCartDTO, ShoppingCart shoppingCart) {
-        modelMapper.map(shoppingCartDTO, shoppingCart);
-    }
-
 }
