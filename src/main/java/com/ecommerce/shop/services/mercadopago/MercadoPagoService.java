@@ -1,52 +1,59 @@
 package com.ecommerce.shop.services.mercadopago;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.ecommerce.shop.models.DTO.mercadopago.PaymentOrderDTO;
+import com.ecommerce.shop.models.DTO.shoppingcart.OrderDTO;
+import com.ecommerce.shop.models.entitys.mercadopago.PaymentEntity;
+import com.ecommerce.shop.models.entitys.orders.Order;
+import com.ecommerce.shop.models.mappers.OrderMapper;
 import com.ecommerce.shop.models.mappers.mercadopago.MPResponseMapper;
+import com.ecommerce.shop.services.order.IOrderService;
 import com.ecommerce.shop.services.utils.mercadopago.MercadoPagoUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mercadopago.MercadoPagoConfig;
-import com.mercadopago.client.common.PhoneRequest;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferencePayerRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
-import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
-import com.mercadopago.net.MPRequest;
-import com.mercadopago.resources.common.Phone;
 import com.mercadopago.resources.payment.Payment;
 import com.mercadopago.resources.preference.Preference;
-import com.mercadopago.resources.preference.PreferenceItem;
 
 @Service
 public class MercadoPagoService {
 
-        private final WebClient webClient;
+        IOrderService orderService;
+        OrderMapper orderMapper;
 
-        MPResponseMapper mpResponseMapper;
+        String succesUrl = "https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=success";
+        String pendingUrl = "https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=pending";
+        String failureUrl = "https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=failure";
+        String notificationUrl = "https://945f-2800-810-748-86f9-d4b8-1d9d-d532-12b7.ngrok-free.app/api/shop/mercadopago/webhooks/notifications";
 
-        public MercadoPagoService(WebClient webClient, MPResponseMapper mpResponseMapper) {
-                this.webClient = webClient;
-                this.mpResponseMapper = mpResponseMapper;
+        public MercadoPagoService(IOrderService orderService, OrderMapper orderMapper) {
+
+                this.orderService = orderService;
+                this.orderMapper = orderMapper;
         }
 
         @Value("${mercadopago.accesstoken}")
         private String accesToken;
+
+        private Long paymentId;
+
+        private OrderDTO orderDTO;
+
+        public Long getPaymentId() {
+                return paymentId;
+        }
 
         public String createPreference(PaymentOrderDTO paymentOrder) {
 
@@ -55,84 +62,78 @@ public class MercadoPagoService {
                 MercadoPagoConfig.setAccessToken(accesToken);
                 try {
 
-                        List<PreferenceItemRequest> items = paymentOrder.getProducts().stream().map(preferenceItem -> {
+                        List<PreferenceItemRequest> items = MercadoPagoUtils.extractItemsFromPaymentOrder(paymentOrder);
 
-                                PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
+                        PreferenceBackUrlsRequest backUrls = MercadoPagoUtils.createBackUrls(succesUrl, pendingUrl,
+                                        failureUrl);
 
-                                                .title(preferenceItem.getTitle())
-                                                .quantity(preferenceItem.getQuantity())
-                                                .unitPrice(preferenceItem.getUnitPrice())
-                                                .description(preferenceItem.getDescription())
-                                                .categoryId(preferenceItem.getCategoryId())
-                                                .pictureUrl(preferenceItem.getPictureUrl())
-                                                .currencyId("ARS")
-                                                .build();
-
-                                return itemRequest;
-
-                        }).collect(Collectors.toList());
-
-                        PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                                        .success("https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=success")
-                                        .pending("https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=pending")
-                                        .failure("https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=failure")
-                                        .build();
-
-                        PreferencePayerRequest payer = PreferencePayerRequest.builder()
-                                        .name(paymentOrder.getBuyer().getFirstname())
-                                        .surname(paymentOrder.getBuyer().getLastname())
-                                        .email(paymentOrder.getBuyer().getEmail())
-                                        .phone(paymentOrder.getBuyer().getPhone())
-                                        .build();
+                        PreferencePayerRequest payer = MercadoPagoUtils.createPayer(paymentOrder.getBuyer());
 
                         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                                        .externalReference(accesToken)
                                         .items(items)
                                         .payer(payer)
                                         .externalReference(paymentOrder.getShoppingCartId())
                                         .backUrls(backUrls)
-                                        .notificationUrl(
-                                                        "https://945f-2800-810-748-86f9-d4b8-1d9d-d532-12b7.ngrok-free.app/api/shop/mercadopago/payments/notifications")
-                                        .autoReturn("approved")
+                                        .notificationUrl(notificationUrl)
                                         .purpose("wallet_purchase")
+                                        .autoReturn("approved")
                                         .build();
 
                         PreferenceClient client = new PreferenceClient();
 
                         Preference preference = client.create(preferenceRequest);
 
-                        return preference.getId();
+                        System.out.println("Preference creada con ID: " + preference.getId() + " y link: "
+                                        + preference.getInitPoint());
+
+                        String preferenceId = preference.getId();
+
+                        orderDTO = orderService.save(paymentOrder);
+
+                        System.out.println("OrderDTO guardada: " + orderDTO);
+
+                        return preferenceId;
 
                 } catch (MPException | MPApiException e) {
                         return (e.getMessage());
                 }
         }
 
-        public Long paymentStatus(ObjectNode paymentNotification) throws Exception {
+        public void processWebHook(JsonNode notificationPayment) throws Exception {
 
-                Long paymentId = MercadoPagoUtils.extractPaymentId(paymentNotification);
+                System.out.println("Webhook recibido: " + notificationPayment.toPrettyString());
+
+                String resource = notificationPayment.path("resource").asText(null);
+                String topic = Optional.ofNullable(notificationPayment.path("topic").asText(null))
+                                .filter(t -> !t.isBlank()).orElse("unknown");
+
+                paymentId = MercadoPagoUtils.extractPaymentId(resource, topic);
 
                 if (paymentId == null)
-                        return null; // merchant_order u otro caso sin ID
+                        return;
 
                 try {
-
-                        System.out.println("Obteniendo detalles del pago con ID: " + paymentId);
                         MercadoPagoConfig.setAccessToken(accesToken);
 
+                        System.out.println("Obteniendo detalles del pago con ID: " + paymentId);
+
                         PaymentClient client = new PaymentClient();
-                        Payment response = client.get(paymentId, MPRequestOptions.createDefault());
 
-                        // System.out.println("esta es la response: " +
-                        // response.getResponse().getContent());
+                        Payment response = client.get(paymentId);
 
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        JsonNode jsonNode = objectMapper.readTree(response.getResponse().getContent());
+                        Order order = orderMapper
+                                        .mapDTOToEntity(orderService.findByOrderNumber(orderDTO.getOrderNumber()));
+
+                        PaymentEntity paymentEntity = PaymentEntity.builder()
+                                        .paymentId(response.getId())
+                                        .order(order)
+                                        .status(response.getStatus())
+                                        .externalReference(response.getExternalReference())
+                                        .merchantOrderId(String.valueOf(response.getOrder().getId()))
+                                        .build();
 
                         System.out.println("esta es la respuesta: "
-                                        + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode));
-
-                        return paymentId;
+                                        + paymentEntity);
 
                 } catch (Exception e) {
                         throw new RuntimeException(e.getMessage());

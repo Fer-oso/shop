@@ -2,9 +2,11 @@ package com.ecommerce.shop.models.entitys.buyer;
 
 import java.util.List;
 
+import com.ecommerce.shop.models.entitys.phone.Phone;
 import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
 import com.ecommerce.shop.models.entitys.user.User;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,13 +37,15 @@ public class Buyer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullname;
+    private String firstname;
+
+    private String lastname;
 
     private String email;
 
     private String address;
 
-    private int phoneNumber;
+    private Phone phone;
 
     @OneToMany(mappedBy = "buyer")
     private List<ShoppingCart> shoppingCart;

@@ -25,14 +25,16 @@ public class BuyerDTO {
 
     private Long id;
 
-    private String fullname;
+    private String firstname;
+
+    private String lastname;
 
     private String email;
 
     private String address;
 
-    @JsonProperty("phonenumber")
-    private Integer phoneNumber;
+    @JsonProperty("phone")
+    private PhoneDTO phone;
 
     @JsonProperty("shopping-cart")
     @JsonIgnoreProperties("buyer")

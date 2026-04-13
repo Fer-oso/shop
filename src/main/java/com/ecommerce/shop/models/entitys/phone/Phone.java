@@ -1,5 +1,6 @@
-package com.ecommerce.shop.models.DTO.shoppingcart;
+package com.ecommerce.shop.models.entitys.phone;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,13 +16,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class OrderDTO {
+@Embeddable
+public class Phone {
 
-    private String orderNumber;
-
-    private String status;
-
-    private String shoppingCartId;
-
-    private Integer total;
+    private String areaCode;
+    private String number;
 }

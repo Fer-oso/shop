@@ -1,4 +1,6 @@
-package com.ecommerce.shop.models.DTO.shoppingcart;
+package com.ecommerce.shop.models.DTO.buyer;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,13 +17,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class OrderDTO {
+public class PhoneDTO {
 
-    private String orderNumber;
-
-    private String status;
-
-    private String shoppingCartId;
-
-    private Integer total;
+    private String areaCode;
+    private String number;
 }
