@@ -23,8 +23,6 @@ import lombok.ToString;
 @Builder
 public class BuyerDTO {
 
-    private Long id;
-
     private String firstname;
 
     private String lastname;

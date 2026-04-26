@@ -19,7 +19,7 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("{\"message\": \"Please log in to access this resource.\"}");
+        response.getWriter().write("{\"status\": 401, \"message\": \"Please log in to access this resource.\"}");
     }
 
 }

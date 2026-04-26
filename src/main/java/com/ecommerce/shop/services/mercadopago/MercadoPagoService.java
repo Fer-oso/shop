@@ -11,8 +11,7 @@ import com.ecommerce.shop.models.DTO.shoppingcart.OrderDTO;
 import com.ecommerce.shop.models.entitys.mercadopago.PaymentEntity;
 import com.ecommerce.shop.models.entitys.orders.Order;
 import com.ecommerce.shop.models.mappers.OrderMapper;
-import com.ecommerce.shop.models.mappers.mercadopago.MPResponseMapper;
-import com.ecommerce.shop.services.order.IOrderService;
+import com.ecommerce.shop.services.sales.order.IOrderService;
 import com.ecommerce.shop.services.utils.mercadopago.MercadoPagoUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mercadopago.MercadoPagoConfig;
@@ -33,10 +32,10 @@ public class MercadoPagoService {
         IOrderService orderService;
         OrderMapper orderMapper;
 
-        String succesUrl = "https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=success";
-        String pendingUrl = "https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=pending";
-        String failureUrl = "https://restaurant-interest-acdbentity-converted.trycloudflare.com/shopping-cart/payment-status?status=failure";
-        String notificationUrl = "https://945f-2800-810-748-86f9-d4b8-1d9d-d532-12b7.ngrok-free.app/api/shop/mercadopago/webhooks/notifications";
+        String succesUrl = "https://idol-singles-latinas-sudden.trycloudflare.com/shopping-cart/payment-status?status=success";
+        String pendingUrl = "https://idol-singles-latinas-sudden.trycloudflare.com/shopping-cart/payment-status?status=pending";
+        String failureUrl = "https://idol-singles-latinas-sudden.trycloudflare.com/shopping-cart/payment-status?status=failure";
+        String notificationUrl = "https://c368-2800-810-748-86f9-bc7f-68bc-6600-ab97.ngrok-free.app/api/shop/mercadopago/webhooks/notifications";
 
         public MercadoPagoService(IOrderService orderService, OrderMapper orderMapper) {
 
@@ -58,6 +57,8 @@ public class MercadoPagoService {
         public String createPreference(PaymentOrderDTO paymentOrder) {
 
                 System.out.println("esto es paymentOrder para verificar datos: " + paymentOrder);
+
+                orderDTO = orderService.findByOrderNumber(paymentOrder.getOrderNumber());
 
                 MercadoPagoConfig.setAccessToken(accesToken);
                 try {
@@ -87,10 +88,6 @@ public class MercadoPagoService {
                                         + preference.getInitPoint());
 
                         String preferenceId = preference.getId();
-
-                        orderDTO = orderService.save(paymentOrder);
-
-                        System.out.println("OrderDTO guardada: " + orderDTO);
 
                         return preferenceId;
 

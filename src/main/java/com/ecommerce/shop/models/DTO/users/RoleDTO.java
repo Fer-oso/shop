@@ -1,6 +1,6 @@
 package com.ecommerce.shop.models.DTO.users;
 
-import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,5 +22,5 @@ import lombok.ToString;
 public class RoleDTO {
 
     @Enumerated(EnumType.STRING)
-    private ROLE_NAME roleName;
+    private ROLE roleName;
 }

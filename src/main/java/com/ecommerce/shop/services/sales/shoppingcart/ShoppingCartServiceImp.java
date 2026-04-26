@@ -1,4 +1,4 @@
-package com.ecommerce.shop.services.shoppingcart;
+package com.ecommerce.shop.services.sales.shoppingcart;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +16,10 @@ import com.ecommerce.shop.models.mappers.ProductMapper;
 import com.ecommerce.shop.models.mappers.ShoppingCartMapper;
 import com.ecommerce.shop.models.mappers.buyer.BuyerMapper;
 import com.ecommerce.shop.models.mappers.product.ProductShoppingCartMapper;
-import com.ecommerce.shop.repository.buyers.BuyerRepository;
 import com.ecommerce.shop.repository.shoppingcart.ShoppingCartRepository;
-import com.ecommerce.shop.services.buyer.IBuyerService;
 import com.ecommerce.shop.services.products.productsShoppingCart.IProductShoppingCartService;
 import com.ecommerce.shop.services.products.productsStore.IProductService;
+import com.ecommerce.shop.services.sales.buyer.IBuyerService;
 
 import jakarta.transaction.Transactional;
 
@@ -33,7 +32,6 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
     IBuyerService buyerService;
     BuyerMapper buyerMapper;
-    BuyerRepository buyerRepository;
 
     IProductShoppingCartService productShoppingCartService;
     ProductShoppingCartMapper productShoppingCartMapper;
@@ -42,7 +40,7 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     ProductMapper productMapper;
 
     public ShoppingCartServiceImp(ShoppingCartRepository shoppingCartRepository, ShoppingCartMapper shoppingCartMapper,
-            IBuyerService buyerService, BuyerMapper buyerMapper, BuyerRepository buyerRepository,
+            IBuyerService buyerService, BuyerMapper buyerMapper,
             IProductShoppingCartService productShoppingCartService,
             ProductShoppingCartMapper productShoppingCartMapper, IProductService productService,
             ProductMapper productMapper) {
@@ -50,7 +48,6 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
         this.shoppingCartMapper = shoppingCartMapper;
         this.buyerService = buyerService;
         this.buyerMapper = buyerMapper;
-        this.buyerRepository = buyerRepository;
         this.productShoppingCartService = productShoppingCartService;
         this.productShoppingCartMapper = productShoppingCartMapper;
         this.productService = productService;
@@ -62,23 +59,21 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
         return Optional.of(shoppingCartDTO).map(dto -> {
 
-            ShoppingCart shoppingCart = shoppingCartRepository
-                    .save(ShoppingCart.builder().shoppingCartId(dto.getShoppingCartId()).build());
-
-            Buyer buyer = buyerMapper.mapDTOToEntity(buyerService.save(dto.getBuyer()));
-
-            shoppingCart.setBuyer(buyer);
+            Buyer buyer = buyerService.saveAndGetEntity(dto.getBuyer());
 
             List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
                     shoppingCartDTO.getProducts());
 
-            shoppingCart.setProducts(productShoppingCartList);
-
-            shoppingCart.setTotal(dto.getTotal());
+            ShoppingCart shoppingCart = ShoppingCart.builder()
+                    .shoppingCartId(dto.getShoppingCartId())
+                    .buyer(buyer)
+                    .products(productShoppingCartList)
+                    .total(dto.getTotal())
+                    .build();
 
             shoppingCartRepository.save(shoppingCart);
 
-            return (shoppingCartMapper.mapEntityToDTO(shoppingCart));
+            return shoppingCartMapper.mapEntityToDTO(shoppingCart);
 
         }).orElseThrow(() -> new UnsupportedOperationException("Error saving shoppingCart"));
     }
@@ -100,7 +95,7 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
                     shoppingCartDTO.getProducts());
 
             Buyer buyer = buyerMapper.mapDTOToEntity(
-                    buyerService.update(shoppingCartDTO.getBuyer(), shoppingCartDTO.getBuyer().getId()));
+                    buyerService.update(shoppingCartDTO.getBuyer(), shoppingCartDTO.getBuyer().getUser().getId()));
 
             shoppingCart.setBuyer(buyer);
 
@@ -137,21 +132,20 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     private List<ProductShoppingCart> createProductShoppingCartList(
             List<ProductShoppingCartDTO> productShoppingCartListDTO) {
 
-        List<ProductShoppingCart> shoppingCartList = productShoppingCartListDTO.stream()
-                .map(productShoppingCartDTO -> {
+        List<ProductShoppingCart> shoppingCartList = productShoppingCartListDTO.stream().map(productShoppingCartDTO -> {
 
-                    Product product = productMapper
-                            .mapDTOToEntity(productService.findById(productShoppingCartDTO.getProduct().getId()));
+            Product product = productMapper
+                    .mapDTOToEntity(productService.findById(productShoppingCartDTO.getProduct().getId()));
 
-                    ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
-                            .product(product)
-                            .quantity(productShoppingCartDTO.getQuantity())
-                            .subtotal(productShoppingCartDTO.getSubtotal())
-                            .build();
+            ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
+                    .product(product)
+                    .quantity(productShoppingCartDTO.getQuantity())
+                    .subtotal(productShoppingCartDTO.getSubtotal())
+                    .build();
 
-                    return productShoppingCart;
+            return productShoppingCart;
 
-                }).collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
         return shoppingCartList;
     }

@@ -1,8 +1,9 @@
-package com.ecommerce.shop.services.order;
+package com.ecommerce.shop.services.sales.order;
+
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.shop.models.DTO.mercadopago.PaymentOrderDTO;
 import com.ecommerce.shop.models.DTO.shoppingcart.OrderDTO;
 import com.ecommerce.shop.models.entitys.orders.Order;
 import com.ecommerce.shop.models.mappers.OrderMapper;
@@ -23,17 +24,17 @@ public class OrderServiceImp implements IOrderService {
 
     @Transactional
     @Override
-    public OrderDTO save(PaymentOrderDTO paymentOrderDTO) {
+    public OrderDTO save(OrderDTO orderDTO) {
 
-        Order order = Order.builder()
+        return Optional.of(orderDTO).map(dto -> {
 
-                .orderNumber(paymentOrderDTO.getOrderNumber())
-                .status(paymentOrderDTO.getStatus())
-                .shoppingCartId(paymentOrderDTO.getShoppingCartId())
-                .total(paymentOrderDTO.getTotal())
-                .build();
+            Order order = orderMapper.mapDTOToEntity(dto);
 
-        return orderMapper.mapEntityToDTO(orderRepository.save(order));
+            order.setOrderNumber("ORD-" + Math.round(Math.random() * 1000000));
+
+            return orderMapper.mapEntityToDTO(orderRepository.save(order));
+
+        }).orElseThrow(() -> new RuntimeException("Error al guardar la orden"));
 
     }
 

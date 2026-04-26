@@ -1,4 +1,5 @@
 package com.ecommerce.shop.configurations.jwt;
+
 import java.io.IOException;
 import java.util.Collection;
 
@@ -19,7 +20,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class JwtAuthFilter extends OncePerRequestFilter{
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     JwtUtils jwtUtils;
 
@@ -32,30 +33,38 @@ public class JwtAuthFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-                String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-                if (jwtToken != null) {
-                    
-                    jwtToken = jwtToken.substring(7);
+        if (jwtToken != null) {
 
-                   DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
-                
-                    String username = jwtUtils.extractUsername(decodedJWT);
+            jwtToken = jwtToken.substring(7);
 
-                    String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
+            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-                    Collection< ? extends GrantedAuthority> listAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+            String username = jwtUtils.extractUsername(decodedJWT);
 
-                    SecurityContext context = SecurityContextHolder.getContext();
+            String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, listAuthorities);
+            Collection<? extends GrantedAuthority> listAuthorities = AuthorityUtils
+                    .commaSeparatedStringToAuthorityList(authorities);
 
-                    context.setAuthentication(authentication);
+            SecurityContext context = SecurityContextHolder.getContext();
 
-                    SecurityContextHolder.setContext(context);
-                }
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, listAuthorities);
 
-                filterChain.doFilter(request, response);
+            context.setAuthentication(authentication);
+
+            SecurityContextHolder.setContext(context);
+        }
+
+        filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return path.equals("/api/shop/auth/login")
+                || path.equals("/api/shop/auth/refresh");
     }
 
 }

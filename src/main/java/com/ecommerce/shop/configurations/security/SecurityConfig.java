@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,10 +53,20 @@ public class SecurityConfig {
         httpSecurity.addFilterBefore(new JwtAuthFilter(jwtUtils), BasicAuthenticationFilter.class);
 
         httpSecurity.exceptionHandling(
-                exceptionHandling -> exceptionHandling.authenticationEntryPoint(new UserAuthenticationEntryPoint()));
+                exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new UserAuthenticationEntryPoint())
+                        .accessDeniedHandler(new UserAccessDeniedHandler()));
 
         httpSecurity.sessionManagement(
                 sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.POST, "/api/shop/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/shop/auth/refresh").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/shop/users").permitAll() // rutas públicas
+                .requestMatchers("/**/mercadopago/webhooks/notifications").permitAll()
+                .anyRequest().authenticated() // ← esto es lo mínimo indispensable
+        );
 
         /*
          * httpSecurity.authorizeHttpRequests(httpRequest -> {
@@ -108,11 +118,10 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173/");
-        configuration.setAllowedOrigins(List.of("http://localhost:5173/",
-                "https://restaurant-interest-acdbentity-converted.trycloudflare.com"));
-        configuration.addAllowedMethod("*"); // Permitir todos los métodos
-        configuration.addAllowedHeader("*"); // Permitir todos los headers
+        configuration.setAllowedOrigins(List.of("http://localhost:5173",
+                "https://orchestra-webcast-learners-innovation.trycloudflare.com"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -19,7 +19,6 @@ public class ProductShoppingCartDTO {
 
     private Long id;
 
-    @JsonIgnoreProperties({ "stock", "available" })
     private ProductDTO product;
 
     private Integer quantity;

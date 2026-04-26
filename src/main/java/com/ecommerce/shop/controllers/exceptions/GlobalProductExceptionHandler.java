@@ -32,11 +32,12 @@ public class GlobalProductExceptionHandler {
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ResponseErrorModel> handleProductNotFoundException(ProductNotFoundException productNotFoundException) {
+    public ResponseEntity<ResponseErrorModel> handleProductNotFoundException(
+            ProductNotFoundException productNotFoundException) {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
-                .status("404")
-                .code("NOT FOUND")
+                .status("NOT FOUND")
+                .code("404")
                 .message(productNotFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -45,11 +46,12 @@ public class GlobalProductExceptionHandler {
     }
 
     @ExceptionHandler(ProductsNotFoundException.class)
-    public ResponseEntity<ResponseErrorModel> handleProductsNotFoundException(ProductsNotFoundException productsNotFoundException) {
+    public ResponseEntity<ResponseErrorModel> handleProductsNotFoundException(
+            ProductsNotFoundException productsNotFoundException) {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
-                .status("404")
-                .code("NOT FOUND")
+                .status("NOT FOUND")
+                .code("404")
                 .message(productsNotFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

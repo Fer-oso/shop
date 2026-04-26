@@ -2,7 +2,7 @@ package com.ecommerce.shop.models.entitys.user;
 
 import java.util.Set;
 
-import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +42,7 @@ public class Role {
 
     @Column(name = "role_name", unique = true)
     @Enumerated(EnumType.STRING)
-    private ROLE_NAME roleName;
+    private ROLE roleName;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))

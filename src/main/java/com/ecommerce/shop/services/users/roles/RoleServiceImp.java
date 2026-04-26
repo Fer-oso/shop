@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecommerce.shop.models.DTO.users.RoleDTO;
 import com.ecommerce.shop.models.entitys.user.Role;
-import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE;
 import com.ecommerce.shop.models.mappers.RoleMapper;
 import com.ecommerce.shop.repository.users.roles.RoleRepository;
 
@@ -15,12 +15,12 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class RoleServiceImp implements IRoleService{
+public class RoleServiceImp implements IRoleService {
 
     RoleRepository roleRepository;
     RoleMapper roleMapper;
 
-    public RoleServiceImp(RoleRepository roleRepository,RoleMapper roleMapper) {
+    public RoleServiceImp(RoleRepository roleRepository, RoleMapper roleMapper) {
         this.roleRepository = roleRepository;
         this.roleMapper = roleMapper;
     }
@@ -53,10 +53,10 @@ public class RoleServiceImp implements IRoleService{
     public List<RoleDTO> findAll() {
         return null;
     }
-    
+
     @Override
-    public Set<Role> findAllByRoleNameIn(Set<ROLE_NAME> rolenames) {
-        
-        return roleRepository.findAllByRoleNameIn(rolenames); 
+    public Set<Role> findAllByRoleNameIn(Set<ROLE> rolenames) {
+
+        return roleRepository.findAllByRoleNameIn(rolenames);
     }
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import com.ecommerce.shop.models.DTO.category.CategoryDTO;
 import com.ecommerce.shop.models.DTO.image.ImageDTO;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
