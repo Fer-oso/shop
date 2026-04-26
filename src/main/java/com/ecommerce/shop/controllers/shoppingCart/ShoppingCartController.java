@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
-import com.ecommerce.shop.services.shoppingcart.IShoppingCartService;
+import com.ecommerce.shop.services.sales.shoppingcart.IShoppingCartService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +27,7 @@ public class ShoppingCartController {
     @PostMapping()
     public ResponseEntity<?> createShoppingCart(@RequestBody ShoppingCartDTO shoppingCartDTO) {
 
-        return ResponseEntity.ok(shoppingCartService.save(shoppingCartDTO));
+        return ResponseEntity.status(201).body(shoppingCartService.save(shoppingCartDTO));
     }
 
     @GetMapping()

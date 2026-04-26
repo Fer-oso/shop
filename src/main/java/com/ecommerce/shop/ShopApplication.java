@@ -14,7 +14,7 @@ import com.ecommerce.shop.models.entitys.category.Category;
 import com.ecommerce.shop.models.entitys.user.Permission;
 import com.ecommerce.shop.models.entitys.user.Role;
 import com.ecommerce.shop.models.entitys.user.User;
-import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE;
 import com.ecommerce.shop.repository.category.CategoryRepository;
 import com.ecommerce.shop.repository.products.ProductRepository;
 import com.ecommerce.shop.repository.users.UserRepository;
@@ -46,21 +46,25 @@ public class ShopApplication {
 			Permission readPermission = permissionRepository.findByName("READ").orElseThrow();
 			Permission deletePermission = permissionRepository.findByName("DELETE").orElseThrow();
 
-			Role roleAdmin = Role.builder().roleName(ROLE_NAME.ADMIN)
+			Role roleAdmin = Role.builder().roleName(ROLE.ADMIN)
 					.permissions(new HashSet<>(List.of(createPermission, updatePermission, readPermission,
 							deletePermission)))
 					.build();
 
-			Role roleUser = Role.builder().roleName(ROLE_NAME.USER)
+			Role roleUser = Role.builder().roleName(ROLE.USER)
 					.permissions(new HashSet<>(List.of(createPermission, updatePermission, readPermission,
 							deletePermission)))
 					.build();
 
-			Role roleInvited = Role.builder().roleName(ROLE_NAME.INVITED)
+			Role roleInvited = Role.builder().roleName(ROLE.INVITED)
 					.permissions(new HashSet<>(List.of(readPermission)))
 					.build();
 
 			roleRepository.saveAll(List.of(roleAdmin, roleUser, roleInvited));
+
+			roleAdmin = roleRepository.findByRoleName(ROLE.ADMIN).orElseThrow();
+			roleUser = roleRepository.findByRoleName(ROLE.USER).orElseThrow();
+			roleInvited = roleRepository.findByRoleName(ROLE.INVITED).orElseThrow();
 
 			User userAdmin = User.builder().username("ferAdmin").password(new BCryptPasswordEncoder().encode("1234"))
 					.roles(Set.of(roleAdmin))

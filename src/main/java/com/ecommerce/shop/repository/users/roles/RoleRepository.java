@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.ecommerce.shop.models.entitys.user.Role;
-import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role,Long>{
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
- Optional<Role> findByRoleName(ROLE_NAME roleName);
+    Optional<Role> findByRoleName(ROLE roleName);
 
- Set<Role> findAllByRoleNameIn(Set<ROLE_NAME> rolenames);
+    Set<Role> findAllByRoleNameIn(Set<ROLE> rolenames);
 }

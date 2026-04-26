@@ -1,4 +1,4 @@
-package com.ecommerce.shop.services.buyer;
+package com.ecommerce.shop.services.sales.buyer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class BuyerServiceImp implements IBuyerService {
 
         return Optional.of(buyerDTO).map(dto -> {
 
-            User user = userMapper.mapDTOToEntity(userService.findById(dto.getUser().getId()));
+            User user = userService.findEntityById(dto.getUser().getId());
 
             Buyer buyer = buyerMapper.mapDTOToEntity(dto);
 
@@ -56,6 +56,22 @@ public class BuyerServiceImp implements IBuyerService {
 
         }).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
     };
+
+    @Override
+    public Buyer saveAndGetEntity(BuyerDTO buyerDTO) {
+        User user = userMapper.mapDTOToEntity(userService.findById(buyerDTO.getUser().getId()));
+
+        Buyer buyer = buyerMapper.mapDTOToEntity(buyerDTO);
+
+        buyer.setUser(user);
+
+        if (buyer.getShoppingCart() == null) {
+
+            buyer.setShoppingCart(new ArrayList<ShoppingCart>());
+        }
+
+        return buyerRepository.save(buyer);
+    }
 
     @Override
     public BuyerDTO findById(Long id) {
@@ -93,21 +109,4 @@ public class BuyerServiceImp implements IBuyerService {
         return buyersList.stream().map(buyerMapper::mapEntityToDTO).toList();
     }
 
-    @Override
-    public Buyer findBuyerById(Long id) {
-        return buyerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
-    }
-
-    @Override
-    public List<BuyerDTO> findAllByUser_id(Long userId) {
-
-        List<Buyer> buyersList = buyerRepository.findAllByUser_id(userId);
-
-        if (buyersList.isEmpty()) {
-            throw new EntityNotFoundException("Buyers not found");
-        }
-
-        return buyersList.stream().map(buyerMapper::mapEntityToDTO).toList();
-
-    }
 }

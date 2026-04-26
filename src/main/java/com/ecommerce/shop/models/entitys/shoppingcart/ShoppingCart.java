@@ -44,7 +44,7 @@ public class ShoppingCart {
     private Buyer buyer;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_shopping_cart__id"))
+    @JoinTable(name = "shopping_cart_product", joinColumns = @JoinColumn(name = "shopping_cart_id"), inverseJoinColumns = @JoinColumn(name = "product_shopping_cart_id"))
     private List<ProductShoppingCart> products;
 
     private Integer total;

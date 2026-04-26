@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
 import com.ecommerce.shop.models.DTO.users.UserDTO;
-import com.ecommerce.shop.services.auth.AuthService;
 import com.ecommerce.shop.services.users.IUserService;
 
 import java.time.LocalDateTime;
@@ -28,11 +27,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UserController {
 
     IUserService userService;
-    AuthService authService;
 
-    public UserController(IUserService userService, AuthService authService) {
+    public UserController(IUserService userService) {
         this.userService = userService;
-        this.authService = authService;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

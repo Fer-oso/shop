@@ -21,7 +21,7 @@ import lombok.ToString;
 @Builder
 public class PaymentOrderDTO {
 
-    private Long id;
+    private String orderNumber;
 
     private String shoppingCartId;
 
@@ -30,4 +30,7 @@ public class PaymentOrderDTO {
     private BuyerOrderDTO buyer;
 
     private Integer total;
+
+    @Builder.Default
+    private String status = "pending";
 }

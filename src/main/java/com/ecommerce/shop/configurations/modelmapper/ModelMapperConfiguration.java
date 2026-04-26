@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ecommerce.shop.models.mappers.CategoryMapper;
 import com.ecommerce.shop.models.mappers.ImageMapper;
+import com.ecommerce.shop.models.mappers.OrderMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
 import com.ecommerce.shop.models.mappers.RoleMapper;
 import com.ecommerce.shop.models.mappers.ShoppingCartMapper;
@@ -23,7 +24,7 @@ public class ModelMapperConfiguration {
     ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.LOOSE)
+                .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(AccessLevel.PRIVATE);
         return modelMapper;
@@ -77,5 +78,10 @@ public class ModelMapperConfiguration {
     @Bean
     MPResponseMapper mpResponseMapper() {
         return new MPResponseMapper(modelMapper());
+    }
+
+    @Bean
+    OrderMapper orderMapper() {
+        return new OrderMapper(modelMapper());
     }
 }

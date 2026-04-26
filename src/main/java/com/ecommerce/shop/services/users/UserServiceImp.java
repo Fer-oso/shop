@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
-
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +18,7 @@ import com.ecommerce.shop.models.DTO.users.UserDTO;
 import com.ecommerce.shop.models.entitys.image.Image;
 import com.ecommerce.shop.models.entitys.user.Role;
 import com.ecommerce.shop.models.entitys.user.User;
-import com.ecommerce.shop.models.entitys.user.enums.ROLE_NAME;
+import com.ecommerce.shop.models.entitys.user.enums.ROLE;
 import com.ecommerce.shop.models.mappers.UserMapper;
 import com.ecommerce.shop.repository.users.UserRepository;
 import com.ecommerce.shop.services.images.IImageService;
@@ -90,7 +90,7 @@ public class UserServiceImp implements IUserService {
             throw new RoleNotFoundException("Role/s not found");
         }
 
-        Set<ROLE_NAME> rolesnameList = Set
+        Set<ROLE> rolesnameList = Set
                 .copyOf(userDTO.getRoles().stream().map(rolename -> rolename.getRoleName()).toList());
 
         Set<Role> roleList = roleService.findAllByRoleNameIn(rolesnameList);
@@ -162,7 +162,7 @@ public class UserServiceImp implements IUserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("username" + username + "not found"));
+                .orElseThrow(() -> new BadCredentialsException("Wrong username"));
 
         List<SimpleGrantedAuthority> listAuthorities = new ArrayList<>();
 
@@ -176,6 +176,12 @@ public class UserServiceImp implements IUserService {
         user.setAuthorities(listAuthorities);
 
         return user;
+    }
+
+    @Override
+    public User findEntityById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("USER NOT FOUND WITH THAT ID" + id));
     }
 
 }

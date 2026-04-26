@@ -19,6 +19,11 @@
     "type": "java.lang.String",
     "description": "User security'"
   },
+    {
+    "name": "security.jwt.refresh.private",
+    "type": "java.lang.String",
+    "description": "Refresh security key'"
+  },
   {
     "name": "mercadopago.accesstoken",
     "type": "java.lang.String",

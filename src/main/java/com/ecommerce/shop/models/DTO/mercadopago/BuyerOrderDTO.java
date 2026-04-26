@@ -1,6 +1,6 @@
 package com.ecommerce.shop.models.DTO.mercadopago;
 
-import com.mercadopago.client.common.PhoneRequest;
+import com.ecommerce.shop.models.DTO.buyer.PhoneDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,5 +28,6 @@ public class BuyerOrderDTO {
 
     private String address;
 
-    private PhoneRequest phone;
+    private PhoneDTO phone;
+
 }

@@ -1,9 +1,7 @@
-package com.ecommerce.shop.models.DTO.users;
+package com.ecommerce.shop.models.DTO.buyer;
 
-import com.ecommerce.shop.models.entitys.user.enums.ROLE;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,8 +17,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class RoleDTO {
+public class PhoneDTO {
 
-    @Enumerated(EnumType.STRING)
-    private ROLE roleName;
+    private String areaCode;
+    private String number;
 }

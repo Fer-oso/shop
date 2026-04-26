@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
 import com.ecommerce.shop.models.DTO.product.ProductDTO;
+import com.ecommerce.shop.services.products.exceptions.ProductsNotFoundException;
 import com.ecommerce.shop.services.products.productsStore.IProductService;
 
 @RestController
@@ -47,6 +48,7 @@ public class ProductControler {
 
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
     ResponseEntity<ResponseSuccessModel> updateProduct(@RequestPart("product") ProductDTO productDTO,
             @RequestPart(name = "image", required = false) List<MultipartFile> images, @PathVariable Long id) {
@@ -81,6 +83,14 @@ public class ProductControler {
                 .build());
     }
 
+    /**
+     * @throws ProductsNotFoundException → manejado por
+     *                                   GlobalProductExceptionHandler
+     *                                   (404)
+     * @throws AccessDeniedException     → manejado por
+     *                                   GlobalProductExceptionHandler
+     *                                   (403)
+     */
     @GetMapping()
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     ResponseEntity<ResponseSuccessModel> findAll() {

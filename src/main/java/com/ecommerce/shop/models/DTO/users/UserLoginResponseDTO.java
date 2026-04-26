@@ -2,6 +2,8 @@ package com.ecommerce.shop.models.DTO.users;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,9 +25,10 @@ public class UserLoginResponseDTO {
 
     private String username;
 
-    private String password;
-
     private String token;
+
+    @JsonIgnore
+    private String refreshToken;
 
     private Set<RoleDTO> roles;
 }

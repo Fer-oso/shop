@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
-import com.ecommerce.shop.services.buyer.IBuyerService;
+import com.ecommerce.shop.services.sales.buyer.IBuyerService;
 
 @RestController
 @RequestMapping("${api.prefix}/buyer")
@@ -29,7 +29,7 @@ public class BuyerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(buyerService.findAllByUser_id(id));
+        return ResponseEntity.status(HttpStatus.OK).body(buyerService.findById(id));
     }
 
     @GetMapping

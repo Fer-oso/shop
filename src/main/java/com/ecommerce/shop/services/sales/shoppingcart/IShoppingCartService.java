@@ -1,4 +1,4 @@
-package com.ecommerce.shop.services.shoppingcart;
+package com.ecommerce.shop.services.sales.shoppingcart;
 
 import java.util.List;
 

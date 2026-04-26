@@ -23,16 +23,16 @@ import lombok.ToString;
 @Builder
 public class BuyerDTO {
 
-    private Long id;
+    private String firstname;
 
-    private String fullname;
+    private String lastname;
 
     private String email;
 
     private String address;
 
-    @JsonProperty("phonenumber")
-    private Integer phoneNumber;
+    @JsonProperty("phone")
+    private PhoneDTO phone;
 
     @JsonProperty("shopping-cart")
     @JsonIgnoreProperties("buyer")
