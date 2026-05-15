@@ -28,33 +28,52 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtUtils = jwtUtils;
     }
 
-    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        // 👇 Log temporal
+        System.out.println("=== JWT FILTER ===");
+        System.out.println("URL: " + request.getRequestURI());
+        System.out.println("Token presente: " + (jwtToken != null));
+
         if (jwtToken != null) {
 
-            jwtToken = jwtToken.substring(7);
+            try {
 
-            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+                jwtToken = jwtToken.substring(7);
 
-            String username = jwtUtils.extractUsername(decodedJWT);
+                DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-            String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
+                String username = jwtUtils.extractUsername(decodedJWT);
 
-            Collection<? extends GrantedAuthority> listAuthorities = AuthorityUtils
-                    .commaSeparatedStringToAuthorityList(authorities);
+                String authorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
-            SecurityContext context = SecurityContextHolder.getContext();
+                // 👇 Log temporal
+                System.out.println("Username: " + username);
+                System.out.println("Authorities: " + authorities);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, listAuthorities);
+                Collection<? extends GrantedAuthority> listAuthorities = AuthorityUtils
+                        .commaSeparatedStringToAuthorityList(authorities);
 
-            context.setAuthentication(authentication);
+                SecurityContext context = SecurityContextHolder.getContext();
 
-            SecurityContextHolder.setContext(context);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
+                        listAuthorities);
+
+                context.setAuthentication(authentication);
+
+                SecurityContextHolder.setContext(context);
+
+            } catch (Exception e) {
+                // 👇 Si el token falla, logeá el error en lugar de silenciarlo
+                System.out.println("Error validando token: " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return; // 👈 Corta el filtro y devuelve 401
+            }
+
         }
 
         filterChain.doFilter(request, response);
@@ -64,7 +83,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
         return path.equals("/api/shop/auth/login")
-                || path.equals("/api/shop/auth/refresh");
+                || path.equals("/api/shop/auth/refresh")
+                || path.equals("/api/shop/mercadopago/create-preference");
     }
 
 }

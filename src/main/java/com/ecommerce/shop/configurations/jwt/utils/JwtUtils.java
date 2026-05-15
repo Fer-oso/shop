@@ -16,9 +16,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ecommerce.shop.models.entitys.user.User;
+import com.ecommerce.shop.services.utils.users.UserUtils;
 
 @Component
 public final class JwtUtils {
+
+    UserUtils userUtils;
 
     @Value("${security.jwt.key.private}")
     private String privateKey;
@@ -29,8 +33,12 @@ public final class JwtUtils {
     @Value("${security.jwt.refresh.private}")
     private String refreshTokenKey;
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 7 * 60 * 1000; // 15 minutos
+    private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60 * 1000; // 15 minutos
     private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 días
+
+    public JwtUtils(UserUtils userUtils) {
+        this.userUtils = userUtils;
+    }
 
     public String createToken(Authentication authentication) {
 
@@ -39,10 +47,13 @@ public final class JwtUtils {
 
         Algorithm algorithm = Algorithm.HMAC256(privateKey);
 
+        System.out.println(authentication.getDetails());
+
         String jwtToken = JWT.create()
                 .withIssuer(userGenerator)
                 .withSubject(authentication.getName())
                 .withClaim("authorities", authorities)
+                .withClaim("user", authentication.getName())
                 .withClaim("type", "access")
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
@@ -78,7 +89,7 @@ public final class JwtUtils {
                 .sign(Algorithm.HMAC256(refreshTokenKey));
     }
 
-    public String refreshAccessToken(String refreshToken) {
+    public String refreshAccessToken(String refreshToken, String usernameRequest) {
 
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(refreshTokenKey))
@@ -88,7 +99,12 @@ public final class JwtUtils {
 
             String username = extractUsername(decoded);
 
-            var authorities = getSpecificClaim(decoded, "authorities").asString();
+            User user = userUtils.checkExistenceByUsername(
+                    usernameRequest)
+                    .orElseThrow(() -> new JWTVerificationException("subject in JWT not found"));
+
+            var authorities = user.getAuthorities().stream().map(authoritie -> authoritie.getAuthority())
+                    .collect(Collectors.joining(","));
 
             return JWT.create()
                     .withIssuer(userGenerator)

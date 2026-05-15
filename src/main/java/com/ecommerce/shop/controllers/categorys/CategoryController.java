@@ -32,13 +32,13 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseSuccessModel> findAll(){
+    public ResponseEntity<ResponseSuccessModel> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
-        .status("OK")
-        .code("200")
-        .response(categoryService.findAll())
-        .timestamp(LocalDateTime.now())
-        .build());
+                .status("OK")
+                .code(200)
+                .response(categoryService.findAll())
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     @GetMapping("/{id}")
@@ -49,7 +49,7 @@ public class CategoryController {
 
     @GetMapping("/categories/{name}")
     public ResponseEntity<CategoryDTO> findCategoryByName(@PathVariable String name) {
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.findByName(name));
     }
 }

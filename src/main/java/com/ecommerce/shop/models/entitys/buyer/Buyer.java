@@ -6,7 +6,6 @@ import com.ecommerce.shop.models.entitys.phone.Phone;
 import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
 import com.ecommerce.shop.models.entitys.user.User;
 
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

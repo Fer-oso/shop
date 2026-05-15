@@ -24,7 +24,7 @@ public class GlobalCategoryExceptionHandler {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("BAD REQUEST")
-                .code("400")
+                .code(400)
                 .message(nullCategoryRequestException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -37,7 +37,7 @@ public class GlobalCategoryExceptionHandler {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("NOT FOUND")
-                .code("404")
+                .code(404)
                 .message(categoryNotFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -50,7 +50,7 @@ public class GlobalCategoryExceptionHandler {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("CONFLICT")
-                .code("409")
+                .code(409)
                 .message(duplicateCategoryException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -63,8 +63,8 @@ public class GlobalCategoryExceptionHandler {
             CategoriesNotFoundException categoriesNotFoundException) {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
-                .status("404")
-                .code("NOT FOUND")
+                .code(404)
+                .status("NOT FOUND")
                 .message(categoriesNotFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

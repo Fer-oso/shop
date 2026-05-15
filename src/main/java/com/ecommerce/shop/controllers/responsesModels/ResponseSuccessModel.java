@@ -12,7 +12,7 @@ import lombok.Setter;
 public final class ResponseSuccessModel {
 
     public String status;
-    public String code;
+    public int code;
     public Object response;
     public LocalDateTime timestamp;
 }

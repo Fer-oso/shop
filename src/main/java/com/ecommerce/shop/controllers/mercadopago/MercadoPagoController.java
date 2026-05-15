@@ -41,7 +41,7 @@ public class MercadoPagoController {
 
         return ResponseEntity.ok().body(ResponseSuccessModel.builder()
                 .status("OK")
-                .code("200")
+                .code(200)
                 .response("Webhook procesado exitosamente")
                 .timestamp(LocalDateTime.now())
                 .build());

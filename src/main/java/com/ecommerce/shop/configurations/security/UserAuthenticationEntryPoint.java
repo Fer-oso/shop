@@ -17,6 +17,16 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
 
+        if (response.isCommitted()) {
+            return;
+        }
+
+        System.out.println("=== AUTH ENTRY POINT DISPARADO ===");
+        System.out.println("URL: " + request.getRequestURI());
+        System.out.println("Excepción: " + authException.getMessage());
+
+        // ✅ Si la respuesta ya fue commited, no hacer nada
+
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("{\"status\": 401, \"message\": \"Please log in to access this resource.\"}");

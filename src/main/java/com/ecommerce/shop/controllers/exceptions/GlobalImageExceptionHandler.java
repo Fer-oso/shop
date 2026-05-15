@@ -14,16 +14,16 @@ import com.ecommerce.shop.services.images.exceptions.ImageNotSelectedException;
 @Order(3)
 @ControllerAdvice
 public class GlobalImageExceptionHandler {
-    
+
     @ExceptionHandler(ImageNotSelectedException.class)
-    public ResponseEntity<?> handleImageNotSelectedException(ImageNotSelectedException imageNotSelectedException){
+    public ResponseEntity<?> handleImageNotSelectedException(ImageNotSelectedException imageNotSelectedException) {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
-        .status("BAD_REQUEST")
-        .code("400")
-        .message(imageNotSelectedException.getMessage())
-        .timestamp(LocalDateTime.now())
-        .build(); 
+                .status("BAD_REQUEST")
+                .code(400)
+                .message(imageNotSelectedException.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

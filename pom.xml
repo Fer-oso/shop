@@ -56,10 +56,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-json</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
+		
+<!-- Source: https://mvnrepository.com/artifact/tools.jackson.core/jackson-databind -->
+<dependency>
+    <groupId>tools.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>3.1.2</version>
+    <scope>compile</scope>
+</dependency>
+
+<!-- Source: https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    
+    <scope>compile</scope>
+</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

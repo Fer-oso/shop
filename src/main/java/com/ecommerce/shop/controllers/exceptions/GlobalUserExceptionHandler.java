@@ -21,7 +21,7 @@ public class GlobalUserExceptionHandler {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("CONFLICT")
-                .code("409")
+                .code(409)
                 .message(duplicateUsernameException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -34,7 +34,7 @@ public class GlobalUserExceptionHandler {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("BAD REQUEST")
-                .code("400")
+                .code(400)
                 .message("User cant be null")
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -46,7 +46,7 @@ public class GlobalUserExceptionHandler {
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException userNotFoundException) {
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("NOT FOUND")
-                .code("404")
+                .code(400)
                 .message(userNotFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -59,7 +59,7 @@ public class GlobalUserExceptionHandler {
 
         ResponseErrorModel response = ResponseErrorModel.builder()
                 .status("NOt FOUND")
-                .code("404")
+                .code(404)
                 .message(noUsersFoundException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

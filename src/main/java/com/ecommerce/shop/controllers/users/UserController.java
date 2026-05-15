@@ -61,7 +61,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
                 .status("OK")
-                .code("200")
+                .code(200)
                 .response(userService.findAll())
                 .timestamp(LocalDateTime.now())
                 .build());
@@ -73,7 +73,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseSuccessModel.builder()
                 .status("OK")
-                .code("200")
+                .code(200)
                 .response(userService.deleteById(id))
                 .timestamp(LocalDateTime.now())
                 .build());
