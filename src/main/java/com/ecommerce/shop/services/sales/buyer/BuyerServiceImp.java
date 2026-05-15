@@ -58,22 +58,6 @@ public class BuyerServiceImp implements IBuyerService {
     };
 
     @Override
-    public Buyer saveAndGetEntity(BuyerDTO buyerDTO) {
-        User user = userMapper.mapDTOToEntity(userService.findById(buyerDTO.getUser().getId()));
-
-        Buyer buyer = buyerMapper.mapDTOToEntity(buyerDTO);
-
-        buyer.setUser(user);
-
-        if (buyer.getShoppingCart() == null) {
-
-            buyer.setShoppingCart(new ArrayList<ShoppingCart>());
-        }
-
-        return buyerRepository.save(buyer);
-    }
-
-    @Override
     public BuyerDTO findById(Long id) {
         return buyerRepository.findById(id).map(buyer -> buyerMapper.mapEntityToDTO(buyer))
                 .orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
@@ -109,4 +93,19 @@ public class BuyerServiceImp implements IBuyerService {
         return buyersList.stream().map(buyerMapper::mapEntityToDTO).toList();
     }
 
+    @Override
+    public Buyer saveAndGetEntity(BuyerDTO buyerDTO) {
+        User user = userMapper.mapDTOToEntity(userService.findById(buyerDTO.getUser().getId()));
+
+        Buyer buyer = buyerMapper.mapDTOToEntity(buyerDTO);
+
+        buyer.setUser(user);
+
+        if (buyer.getShoppingCart() == null) {
+
+            buyer.setShoppingCart(new ArrayList<ShoppingCart>());
+        }
+
+        return buyerRepository.save(buyer);
+    }
 }

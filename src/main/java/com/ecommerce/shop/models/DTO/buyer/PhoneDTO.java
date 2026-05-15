@@ -1,7 +1,5 @@
 package com.ecommerce.shop.models.DTO.buyer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

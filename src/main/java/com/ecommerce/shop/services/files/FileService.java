@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-
 @Service
 public class FileService {
-
 
     private static String FOLDER_PATH = "src/main/resources/public/img";
 
@@ -46,7 +44,6 @@ public class FileService {
         }
     }
 
-    @SuppressWarnings("null")
     public String uniqueFileName(MultipartFile file) {
 
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());

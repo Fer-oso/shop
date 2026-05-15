@@ -1,5 +1,6 @@
 package com.ecommerce.shop.models.entitys.products;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,17 +43,17 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "brand", nullable = false)
+    @Column(name = "brand", nullable = false, length = 50)
     private String brand;
 
     @Column(length = 2000)
     private String description;
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(name = "stock", nullable = false)
     private Integer stock;
@@ -61,7 +62,7 @@ public class Product {
     @Column(name = "available")
     private boolean available = true;
 
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, length = 40)
     private String code;
 
     @ManyToOne

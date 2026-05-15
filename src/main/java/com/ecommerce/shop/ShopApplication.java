@@ -78,7 +78,7 @@ public class ShopApplication {
 					.accountNonLocked(true).credentialsNonExpired(true).build();
 
 			User userInvited = User.builder().username("ferInvited").password(new BCryptPasswordEncoder()
-					.encode("1234")).roles(Set.of(roleInvited, roleAdmin)).enabled(true)
+					.encode("1234")).roles(Set.of(roleInvited)).enabled(true)
 					.accountNonExpired(true)
 					.accountNonLocked(true).credentialsNonExpired(true).build();
 

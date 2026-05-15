@@ -1,6 +1,10 @@
 package com.ecommerce.shop.controllers.responsesModels;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,8 +18,10 @@ import lombok.Setter;
 @Builder
 public class ResponseErrorModel {
 
-    private String code;
+    private int code;
     private String status;
     private String message;
+    private Map<String, String> errors;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime timestamp;
 }

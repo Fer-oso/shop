@@ -73,7 +73,7 @@ public class MercadoPagoService {
                         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                                         .items(items)
                                         .payer(payer)
-                                        .externalReference(paymentOrder.getShoppingCartId())
+                                        .externalReference(paymentOrder.getOrderNumber())
                                         .backUrls(backUrls)
                                         .notificationUrl(notificationUrl)
                                         .purpose("wallet_purchase")

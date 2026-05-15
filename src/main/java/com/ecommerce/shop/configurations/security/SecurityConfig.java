@@ -16,8 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,9 +34,11 @@ import com.ecommerce.shop.services.users.UserServiceImp;
 public class SecurityConfig {
 
     private JwtUtils jwtUtils;
+    private PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(JwtUtils jwtUtils) {
+    public SecurityConfig(JwtUtils jwtUtils, PasswordEncoder passwordEncoder) {
         this.jwtUtils = jwtUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -63,8 +63,11 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/shop/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/shop/auth/refresh").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/shop/users").permitAll() // rutas públicas
-                .requestMatchers("/**/mercadopago/webhooks/notifications").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/shop/products", "/api/shop/products/**").permitAll()
+                // .requestMatchers(HttpMethod.POST, "/api/shop/users").permitAll() // rutas
+                // públicas
+                .requestMatchers("/api/shop/mercadopago/create-preference").permitAll()
+                .requestMatchers("/api/shop/mercadopago/webhooks/notifications").permitAll()
                 .anyRequest().authenticated() // ← esto es lo mínimo indispensable
         );
 
@@ -103,15 +106,9 @@ public class SecurityConfig {
 
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userServiceImp);
 
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
         return daoAuthenticationProvider;
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-
-        return new BCryptPasswordEncoder();
     }
 
     @Bean

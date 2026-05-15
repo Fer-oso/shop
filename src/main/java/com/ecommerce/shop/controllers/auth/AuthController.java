@@ -1,5 +1,6 @@
-package com.ecommerce.shop.controllers.users.login;
+package com.ecommerce.shop.controllers.auth;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.cloudinary.http44.api.Response;
+
 import com.ecommerce.shop.configurations.jwt.utils.JwtUtils;
+import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
 import com.ecommerce.shop.models.DTO.users.CredentialsUser;
-import com.ecommerce.shop.models.DTO.users.UserLoginResponseDTO;
 import com.ecommerce.shop.services.login.ILoginService;
 
 import jakarta.servlet.http.Cookie;
@@ -29,19 +30,20 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/shop/auth")
-public class LoginController {
+public class AuthController {
 
         private ILoginService loginService;
 
         private JwtUtils jwtUtils;
 
-        public LoginController(ILoginService loginService, JwtUtils jwtUtils) {
+        public AuthController(ILoginService loginService, JwtUtils jwtUtils) {
                 this.loginService = loginService;
                 this.jwtUtils = jwtUtils;
         }
 
         @PostMapping("/login")
-        public ResponseEntity<?> login(@RequestBody CredentialsUser credentialsUser, HttpServletResponse response) {
+        public ResponseEntity<ResponseSuccessModel> login(@RequestBody CredentialsUser credentialsUser,
+                        HttpServletResponse response) {
 
                 var loginResponse = loginService.loginWithUsernameAndPassword(credentialsUser);
 
@@ -55,20 +57,22 @@ public class LoginController {
                                 .build();
 
                 response.addHeader("Set-Cookie", cookie.toString());
+                response.addHeader(null, null);
 
                 response.setStatus(200);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                                UserLoginResponseDTO.builder()
-                                                .id(loginResponse.getId())
-                                                .username(loginResponse.getUsername())
-                                                .roles(loginResponse.getRoles())
-                                                .token(loginResponse.getToken())
+                                ResponseSuccessModel.builder()
+                                                .status("OK")
+                                                .code(200)
+                                                .response(loginResponse)
+                                                .timestamp(LocalDateTime.now())
                                                 .build());
         }
 
         @PostMapping("/refresh")
-        public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
+        public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response,
+                        @RequestBody String usernameRequest) {
 
                 Cookie[] cookies = request.getCookies();
 
@@ -84,11 +88,9 @@ public class LoginController {
                                 .orElseThrow(() -> new RuntimeException("Refresh token not found"));
 
                 // Validar y generar nuevo access token
-                String newAccessToken = jwtUtils.refreshAccessToken(refreshToken);
+                String newAccessToken = jwtUtils.refreshAccessToken(refreshToken, usernameRequest.replace("=", ""));
 
                 if (newAccessToken != null) {
-
-                        // newAccessToken = newAccessToken.substring(7);
 
                         DecodedJWT decodedJWT = jwtUtils.validateToken(newAccessToken);
 
@@ -103,8 +105,6 @@ public class LoginController {
                                         listAuthorities);
 
                         String newRefreshToken = jwtUtils.createRefreshToken(authentication);
-
-                        System.out.println(newRefreshToken);
 
                         response.addHeader("Set-Cookie",
                                         "refreshToken=" + newRefreshToken +
