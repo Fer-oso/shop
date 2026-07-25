@@ -1,4 +1,4 @@
-package com.ecommerce.shop.services.products.productsStore;
+package com.ecommerce.shop.services.products;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 
 @Service
 @Transactional
-public class ProductServiceImp implements IProductService {
+public class ProductServiceImp implements IProductService<ProductDTO> {
 
     ProductRepository productRepository;
 
@@ -54,6 +54,8 @@ public class ProductServiceImp implements IProductService {
             List<Image> images = imageService.saveImage(filesImage);
 
             product.setCategory(category);
+
+            product.setWeight(120);
 
             product.setImages(images);
 
@@ -102,6 +104,13 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
+    public ProductDTO findByName(String name) {
+        return productRepository.findProductByName(name)
+                .map(product -> productMapper.mapEntityToDTO(product))
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with that id: " + name));
+    }
+
+    @Override
     public String deleteById(Long id) {
 
         return productRepository.findById(id).map(product -> {
@@ -116,14 +125,17 @@ public class ProductServiceImp implements IProductService {
     @Override
     public List<ProductDTO> findAll() {
 
-        List<Product> productList = productRepository.findAll();
+        List<Product> products = productRepository.findAll();
 
-        if (productList.isEmpty()) {
+        if (products.isEmpty()) {
 
             throw new ProductsNotFoundException("No products in database");
         }
 
-        return productList.stream().map(product -> productMapper.mapEntityToDTO(product)).toList();
+        List<ProductDTO> productsList = products.stream().map(product -> productMapper.mapEntityToDTO(product))
+                .toList();
+
+        return productsList;
     }
 
     @Override

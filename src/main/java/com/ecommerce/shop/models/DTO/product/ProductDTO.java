@@ -14,18 +14,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
-@Builder
+@ToString
+@SuperBuilder
 public class ProductDTO {
 
     private Long id;
@@ -35,10 +38,10 @@ public class ProductDTO {
     private String name;
 
     @NotBlank(message = "La marca del producto es obligatorio")
-    @Size(max = 100, message = "La marca no puede superar los 50 caracteres")
+    @Size(max = 50, message = "La marca no puede superar los 50 caracteres")
     private String brand;
 
-    @Size(max = 100, message = "La marca no puede superar los 50 caracteres")
+    @Size(max = 2000, message = "La descripcion no puede superar los 2000 caracteres")
     private String description;
 
     @NotNull(message = "El precio es obligatorio")
@@ -53,10 +56,16 @@ public class ProductDTO {
     private boolean available;
 
     @NotBlank(message = "El codigo del producto es obligatorio")
-    @Size(max = 100, message = "La marca no puede superar los 40 caracteres")
+    @Size(max = 40, message = "El codigo no puede superar los 40 caracteres")
     private String code;
 
     private CategoryDTO category;
+
+    private Integer weight;
+
+    private String destacable;
+
+    private String rating;
 
     private List<ImageDTO> images;
 

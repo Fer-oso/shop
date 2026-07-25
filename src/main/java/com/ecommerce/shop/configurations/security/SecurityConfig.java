@@ -63,8 +63,9 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/shop/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/shop/auth/refresh").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/shop/products", "/api/shop/products/**").permitAll()
-                // .requestMatchers(HttpMethod.POST, "/api/shop/users").permitAll() // rutas
+                .requestMatchers(HttpMethod.GET, "/api/shop/products").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/shop/products/{productName}").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/shop/users").permitAll() // rutas
                 // públicas
                 .requestMatchers("/api/shop/mercadopago/create-preference").permitAll()
                 .requestMatchers("/api/shop/mercadopago/webhooks/notifications").permitAll()
@@ -115,8 +116,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173",
-                "https://orchestra-webcast-learners-innovation.trycloudflare.com"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174",
+                "https://cloudy-pope-principle-cornell.trycloudflare.com"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

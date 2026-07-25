@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public final class ResponseSuccessModel {
+public final class ResponseSuccessModel<T> {
 
     public String status;
     public int code;
-    public Object response;
+    public T response;
     public LocalDateTime timestamp;
 }

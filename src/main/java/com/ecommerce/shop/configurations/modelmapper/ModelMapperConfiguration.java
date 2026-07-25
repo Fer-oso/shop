@@ -6,7 +6,10 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.ecommerce.shop.models.mappers.BakeableMapper;
+import com.ecommerce.shop.models.mappers.BrownieMapper;
 import com.ecommerce.shop.models.mappers.CategoryMapper;
+import com.ecommerce.shop.models.mappers.CookieMapper;
 import com.ecommerce.shop.models.mappers.ImageMapper;
 import com.ecommerce.shop.models.mappers.OrderMapper;
 import com.ecommerce.shop.models.mappers.ProductMapper;
@@ -30,9 +33,9 @@ public class ModelMapperConfiguration {
         return modelMapper;
     }
 
-    @Bean
+    /* */ @Bean
     ProductMapper productMapper() {
-        return new ProductMapper(modelMapper());
+        return new ProductMapper(modelMapper(), bakeableMapper(), cookieMapper(), brownieMapper());
     }
 
     @Bean
@@ -83,5 +86,20 @@ public class ModelMapperConfiguration {
     @Bean
     OrderMapper orderMapper() {
         return new OrderMapper(modelMapper());
+    }
+
+    @Bean
+    CookieMapper cookieMapper() {
+        return new CookieMapper(modelMapper());
+    }
+
+    @Bean
+    BrownieMapper brownieMapper() {
+        return new BrownieMapper(modelMapper());
+    }
+
+    @Bean
+    BakeableMapper bakeableMapper() {
+        return new BakeableMapper(modelMapper());
     }
 }

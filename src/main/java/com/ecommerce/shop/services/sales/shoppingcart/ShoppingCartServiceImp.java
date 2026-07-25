@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.shop.models.DTO.product.ProductDTO;
 import com.ecommerce.shop.models.DTO.product.ProductShoppingCartDTO;
 import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
 import com.ecommerce.shop.models.entitys.buyer.Buyer;
@@ -17,9 +18,9 @@ import com.ecommerce.shop.models.mappers.ShoppingCartMapper;
 import com.ecommerce.shop.models.mappers.buyer.BuyerMapper;
 import com.ecommerce.shop.models.mappers.product.ProductShoppingCartMapper;
 import com.ecommerce.shop.repository.shoppingcart.ShoppingCartRepository;
-import com.ecommerce.shop.services.products.productsShoppingCart.IProductShoppingCartService;
-import com.ecommerce.shop.services.products.productsStore.IProductService;
+import com.ecommerce.shop.services.products.IProductService;
 import com.ecommerce.shop.services.sales.buyer.IBuyerService;
+import com.ecommerce.shop.services.sales.shoppingcart.productsShoppingCart.IProductShoppingCartService;
 
 import jakarta.transaction.Transactional;
 
@@ -36,13 +37,13 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     IProductShoppingCartService productShoppingCartService;
     ProductShoppingCartMapper productShoppingCartMapper;
 
-    IProductService productService;
+    IProductService<ProductDTO> productService;
     ProductMapper productMapper;
 
     public ShoppingCartServiceImp(ShoppingCartRepository shoppingCartRepository, ShoppingCartMapper shoppingCartMapper,
             IBuyerService buyerService, BuyerMapper buyerMapper,
             IProductShoppingCartService productShoppingCartService,
-            ProductShoppingCartMapper productShoppingCartMapper, IProductService productService,
+            ProductShoppingCartMapper productShoppingCartMapper, IProductService<ProductDTO> productService,
             ProductMapper productMapper) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.shoppingCartMapper = shoppingCartMapper;

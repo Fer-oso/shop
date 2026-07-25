@@ -1,4 +1,4 @@
-package com.ecommerce.shop.services.products.productsShoppingCart;
+package com.ecommerce.shop.services.sales.shoppingcart.productsShoppingCart;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class ProductShoppingCartServiceImp implements IProductShoppingCartService{
+public class ProductShoppingCartServiceImp implements IProductShoppingCartService {
 
     ProductShoppingCartRepository productShoppingCartRepository;
 
@@ -23,18 +23,18 @@ public class ProductShoppingCartServiceImp implements IProductShoppingCartServic
             ProductShoppingCartMapper productShoppingCartMapper) {
         this.productShoppingCartRepository = productShoppingCartRepository;
         this.productShoppingCartMapper = productShoppingCartMapper;
-        
+
     }
 
     @Override
     public ProductShoppingCartDTO save(ProductShoppingCartDTO productShoppingCartDTO) {
-        
-        return Optional.of(productShoppingCartDTO).map( dto ->{
+
+        return Optional.of(productShoppingCartDTO).map(dto -> {
 
             ProductShoppingCart productShoppingCart = productShoppingCartMapper.mapDTOToEntity(dto);
-            
+
             return productShoppingCartMapper.mapEntityToDTO(productShoppingCartRepository.save(productShoppingCart));
-            
+
         }).orElseThrow(() -> new UnsupportedOperationException("Error saving productShoppingCart"));
     }
 
