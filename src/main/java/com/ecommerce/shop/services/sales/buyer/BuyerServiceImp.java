@@ -45,9 +45,9 @@ public class BuyerServiceImp implements IBuyerService {
 
             Buyer buyer = buyerMapper.mapDTOToEntity(dto);
 
-            if (buyer.getShoppingCart() == null) {
+            if (buyer.getShoppingCarts() == null) {
 
-                buyer.setShoppingCart(new ArrayList<ShoppingCart>());
+                buyer.setShoppingCarts(new ArrayList<ShoppingCart>());
             }
 
             buyer.setUser(user);
@@ -101,9 +101,9 @@ public class BuyerServiceImp implements IBuyerService {
 
         buyer.setUser(user);
 
-        if (buyer.getShoppingCart() == null) {
+        if (buyer.getShoppingCarts() == null) {
 
-            buyer.setShoppingCart(new ArrayList<ShoppingCart>());
+            buyer.setShoppingCarts(new ArrayList<ShoppingCart>());
         }
 
         return buyerRepository.save(buyer);

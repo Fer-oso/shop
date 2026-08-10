@@ -1,9 +1,11 @@
 package com.ecommerce.shop.services.sales.shoppingcart;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.shop.models.DTO.product.ProductDTO;
@@ -20,6 +22,9 @@ import com.ecommerce.shop.models.mappers.product.ProductShoppingCartMapper;
 import com.ecommerce.shop.repository.shoppingcart.ShoppingCartRepository;
 import com.ecommerce.shop.services.products.IProductService;
 import com.ecommerce.shop.services.sales.buyer.IBuyerService;
+import com.ecommerce.shop.services.sales.shoppingcart.exceptions.ShoppingCartAlreadyExistsException;
+import com.ecommerce.shop.services.sales.shoppingcart.exceptions.ShoppingCartNotFoundException;
+import com.ecommerce.shop.services.sales.shoppingcart.exceptions.ShoppingCartPersistenceException;
 import com.ecommerce.shop.services.sales.shoppingcart.productsShoppingCart.IProductShoppingCartService;
 
 import jakarta.transaction.Transactional;
@@ -58,25 +63,30 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
     @Override
     public ShoppingCartDTO save(ShoppingCartDTO shoppingCartDTO) {
 
-        return Optional.of(shoppingCartDTO).map(dto -> {
+        Buyer buyer = buyerService.saveAndGetEntity(shoppingCartDTO.getBuyer());
 
-            Buyer buyer = buyerService.saveAndGetEntity(dto.getBuyer());
+        List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
+                shoppingCartDTO.getProducts());
 
-            List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
-                    shoppingCartDTO.getProducts());
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .shoppingCartId(shoppingCartDTO.getShoppingCartId())
+                .status(shoppingCartDTO.getStatus())
+                .buyer(buyer)
+                .products(productShoppingCartList)
+                .build();
 
-            ShoppingCart shoppingCart = ShoppingCart.builder()
-                    .shoppingCartId(dto.getShoppingCartId())
-                    .buyer(buyer)
-                    .products(productShoppingCartList)
-                    .total(dto.getTotal())
-                    .build();
+        try {
+            shoppingCart = shoppingCartRepository.save(shoppingCart);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ShoppingCartAlreadyExistsException(shoppingCartDTO.getShoppingCartId());
+        } catch (DataAccessException ex) {
+            Logger.getLogger(ShoppingCartServiceImp.class.getName())
+                    .severe("Error saving shopping cart: " + ex.getMessage());
+            throw new ShoppingCartPersistenceException("No se pudo guardar el carrito", ex);
+        }
 
-            shoppingCartRepository.save(shoppingCart);
+        return shoppingCartMapper.mapEntityToDTO(shoppingCart);
 
-            return shoppingCartMapper.mapEntityToDTO(shoppingCart);
-
-        }).orElseThrow(() -> new UnsupportedOperationException("Error saving shoppingCart"));
     }
 
     @Override
@@ -84,29 +94,27 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
 
         return shoppingCartRepository.findByShoppingCartId(
                 shoppingCartId).map(shoppingCartMapper::mapEntityToDTO)
-                .orElseThrow(() -> new UnsupportedOperationException("ShoppingCart not found"));
+                .orElseThrow(
+                        () -> new ShoppingCartNotFoundException("Shopping cart not found with ID: " + shoppingCartId));
     }
 
     @Override
     public ShoppingCartDTO update(ShoppingCartDTO shoppingCartDTO, String id) {
 
-        return shoppingCartRepository.findByShoppingCartId(id).map(shoppingCart -> {
+        ShoppingCart shoppingCart = shoppingCartRepository.findByShoppingCartId(id)
+                .orElseThrow(() -> new ShoppingCartNotFoundException("Shopping cart not found with ID: " + id));
 
-            List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
-                    shoppingCartDTO.getProducts());
+        List<ProductShoppingCart> productShoppingCartList = createProductShoppingCartList(
+                shoppingCartDTO.getProducts());
 
-            Buyer buyer = buyerMapper.mapDTOToEntity(
-                    buyerService.update(shoppingCartDTO.getBuyer(), shoppingCartDTO.getBuyer().getUser().getId()));
+        Buyer buyer = buyerMapper.mapDTOToEntity(buyerService
+                .update(buyerMapper.mapEntityToDTO(shoppingCart.getBuyer()), shoppingCart.getBuyer().getId()));
 
-            shoppingCart.setBuyer(buyer);
+        shoppingCart.setBuyer(buyer);
+        shoppingCart.setProducts(productShoppingCartList);
+        shoppingCart.setStatus(shoppingCartDTO.getStatus());
 
-            shoppingCart.setProducts(productShoppingCartList);
-
-            shoppingCart.setTotal(shoppingCartDTO.getTotal());
-
-            return shoppingCartMapper.mapEntityToDTO(shoppingCartRepository.save(shoppingCart));
-
-        }).orElseThrow(() -> new UnsupportedOperationException("ShoppingCart not found"));
+        return shoppingCartMapper.mapEntityToDTO(shoppingCartRepository.save(shoppingCart));
     }
 
     @Override
@@ -120,7 +128,7 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
                     + shoppingCartId;
 
         }).orElseThrow(
-                () -> new UnsupportedOperationException("Shopping Cart not found with that id: " + shoppingCartId));
+                () -> new ShoppingCartNotFoundException("Shopping cart not found with ID: " + shoppingCartId));
     }
 
     @Override
@@ -141,7 +149,6 @@ public class ShoppingCartServiceImp implements IShoppingCartService {
             ProductShoppingCart productShoppingCart = ProductShoppingCart.builder()
                     .product(product)
                     .quantity(productShoppingCartDTO.getQuantity())
-                    .subtotal(productShoppingCartDTO.getSubtotal())
                     .build();
 
             return productShoppingCart;

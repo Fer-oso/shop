@@ -1,5 +1,7 @@
 package com.ecommerce.shop.models.DTO.product;
 
+import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,7 +21,7 @@ public class ProductShoppingCartDTO {
 
     private ProductDTO product;
 
-    private Integer quantity;
+    private ShoppingCartDTO shoppingCart;
 
-    private Integer subtotal;
+    private Integer quantity;
 }

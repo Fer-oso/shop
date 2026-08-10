@@ -1,7 +1,6 @@
 package com.ecommerce.shop.models.DTO.product;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ecommerce.shop.models.DTO.category.CategoryDTO;
@@ -68,10 +67,4 @@ public class ProductDTO {
     private String rating;
 
     private List<ImageDTO> images;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime deletedAt;
 }

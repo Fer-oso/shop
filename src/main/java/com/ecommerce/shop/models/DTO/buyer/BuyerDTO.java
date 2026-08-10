@@ -6,6 +6,9 @@ import com.ecommerce.shop.models.DTO.shoppingcart.ShoppingCartDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,25 +21,29 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class BuyerDTO {
 
+    @Size(max = 100)
     private String firstname;
 
+    @Size(max = 100)
     private String lastname;
 
+    @Email(message = "Email inválido")
     private String email;
 
-    private String address;
+    @Size(max = 255)
+    private String address; // si es obligatoria, agregale @NotBlank
 
-    @JsonProperty("phone")
-    private PhoneDTO phone;
+    @Valid
+    private PhoneDTO phone; // @Valid para que cascadee las validaciones propias de PhoneDTO
 
     @JsonProperty("shopping-cart")
     @JsonIgnoreProperties("buyer")
-    private List<ShoppingCartDTO> shoppingCart;
+    private List<ShoppingCartDTO> shoppingCarts;
 
     private UserBuyerDTO user;
 }

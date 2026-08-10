@@ -107,7 +107,7 @@ public class ProductServiceImp implements IProductService<ProductDTO> {
     public ProductDTO findByName(String name) {
         return productRepository.findProductByName(name)
                 .map(product -> productMapper.mapEntityToDTO(product))
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with that id: " + name));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with that name: " + name));
     }
 
     @Override
