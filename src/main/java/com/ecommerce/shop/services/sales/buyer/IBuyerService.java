@@ -6,5 +6,7 @@ import com.ecommerce.shop.services.interfaces.ICrudService;
 
 public interface IBuyerService extends ICrudService<BuyerDTO, Long> {
 
-    Buyer saveAndGetEntity(BuyerDTO buyerDTO);
+    Buyer saveEntity(BuyerDTO buyerDTO);
+
+    Buyer updateEntity(BuyerDTO buyerDTO);
 }

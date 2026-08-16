@@ -2,6 +2,8 @@ package com.ecommerce.shop.services.images;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +16,7 @@ import com.ecommerce.shop.services.files.FileService;
 import com.ecommerce.shop.services.images.cloudinary.CloudinaryService;
 import com.ecommerce.shop.services.images.exceptions.ImageNotFoundException;
 import com.ecommerce.shop.services.images.exceptions.ImageNotSelectedException;
+import com.ecommerce.shop.services.images.exceptions.ImageUploadException;
 
 import jakarta.transaction.Transactional;
 
@@ -58,36 +61,16 @@ public class ImageServiceImp implements IImageService {
     @Override
     public List<ImageDTO> save(List<MultipartFile> filesImage) {
 
-        fileService.checkIfFolderExists();
+        /*
+         * return buildImages(filesImage).stream()
+         * .map(imageRepository::save)
+         * .map(imageMapper::mapEntityToDTO)
+         * .toList();
+         * }
+         */
 
-        if (filesImage == null || filesImage.isEmpty()) {
-
-            return List.of();
-        }
-
-        return filesImage.stream().filter(file -> file != null).map(file -> {
-
-            try {
-
-                Image image = Image.builder()
-                        .fileName(fileService.uniqueFileName(file))
-                        .fileType(file.getContentType())
-                        .image((file.getBytes()))
-                        .downloadUrl(cloudinaryService.uploadImage(
-                                file))
-                        .build();
-
-                Image savedImage = imageRepository.save(image);
-
-                fileService.saveInFolderImages(file);
-
-                return imageMapper.mapEntityToDTO(savedImage);
-
-            } catch (IOException e) {
-
-                throw new RuntimeException(e.getMessage());
-            }
-        }).toList();
+        return buildImages(filesImage).stream().map(file -> imageRepository.save(file))
+                .map(image -> imageMapper.mapEntityToDTO(image)).toList();
     }
 
     @Override
@@ -114,38 +97,38 @@ public class ImageServiceImp implements IImageService {
     @Override
     public List<Image> saveImage(List<MultipartFile> filesImage) {
 
+        return buildImages(filesImage);
+    }
+
+    private List<Image> buildImages(List<MultipartFile> filesImage) {
+
         fileService.checkIfFolderExists();
 
-        if (filesImage == null || filesImage.isEmpty())
+        if (filesImage == null || filesImage.isEmpty()) {
             return List.of();
+        }
 
-        return filesImage.stream().map(file -> {
+        return filesImage.stream()
+                .filter(Objects::nonNull)
+                .map(file -> {
+                    if (file.getContentType() == null) {
+                        throw new ImageNotSelectedException("File content type is null. Select one archive");
+                    }
+                    try {
+                        Image image = Image.builder()
+                                .fileName(fileService.uniqueFileName(file))
+                                .fileType(file.getContentType())
+                                .image(file.getBytes())
+                                .downloadUrl(cloudinaryService.uploadImage(file))
+                                .build();
 
-            try {
-
-                if (file.getContentType() == null) {
-                    throw new ImageNotSelectedException("File content type is null. Select one archive");
-                }
-
-                Image image = Image.builder()
-                        .fileName(fileService.uniqueFileName(file))
-                        .fileType(file.getContentType())
-                        .image(file.getBytes())
-                        .downloadUrl(cloudinaryService.uploadImage(
-                                file))
-                        .build();
-
-                Image savedImage = imageRepository.save(image);
-
-                fileService.saveInFolderImages(file);
-
-                return imageRepository.save(savedImage);
-
-            } catch (IOException e) {
-
-                throw new RuntimeException(e.getMessage());
-            }
-        }).toList();
+                        fileService.saveInFolderImages(file);
+                        return image;
+                    } catch (IOException e) {
+                        throw new ImageUploadException("Error al subir la imagen: " + file.getOriginalFilename(), e);
+                    }
+                })
+                .toList();
     }
 
 }

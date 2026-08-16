@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ecommerce.shop.models.entitys.products.Product;
+
 public interface IProductService<T> {
+
+    Product findEntityById(Long id);
 
     T save(T productDTO, List<MultipartFile> files);
 

@@ -30,7 +30,7 @@ import lombok.ToString;
 @Setter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "roles")
 public class Role {

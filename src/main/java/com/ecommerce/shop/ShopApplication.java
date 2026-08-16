@@ -199,7 +199,7 @@ public class ShopApplication {
 					.code("trufas")
 					.description(
 							"El Combo de la Casa es nuestra selección estrella: 1 Brownie Clásico + 2 Cookies Chocochip. Pensado para compartir un momento, sorprender a alguien o simplemente darte un gustazo doble. Llega cuidadosamente empacado con el toque de la casa y listo para endulzar cualquier ocasión.")
-					.category(trufasCategory)
+					.category(cookieCategory)
 					.ingredients(List.of(
 							"Ver ingredientes individuales de cada producto"))
 					.features(List.of("1 Brownie Clásico + 2 Cookies",

@@ -33,7 +33,7 @@ public final class JwtUtils {
     @Value("${security.jwt.refresh.private}")
     private String refreshTokenKey;
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60 * 1000; // 15 minutos
+    private static final long ACCESS_TOKEN_EXPIRATION = 10 * 60 * 1000; // 15 minutos
     private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7 días
 
     public JwtUtils(UserUtils userUtils) {

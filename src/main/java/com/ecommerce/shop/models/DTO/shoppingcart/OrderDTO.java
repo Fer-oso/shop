@@ -1,5 +1,10 @@
 package com.ecommerce.shop.models.DTO.shoppingcart;
 
+import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
+
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,7 +26,7 @@ public class OrderDTO {
 
     private String status;
 
-    private String shoppingCartId;
+    private ShoppingCartDTO shoppingCart;
 
     private Integer total;
 }

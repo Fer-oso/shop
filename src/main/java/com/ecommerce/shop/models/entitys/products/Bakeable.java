@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +23,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @Table(name = "bakeables")
-@EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("BAKEABLES")
 public abstract class Bakeable extends Product {
 

@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ecommerce.shop.models.DTO.buyer.BuyerDTO;
+import com.ecommerce.shop.models.DTO.buyer.UserBuyerDTO;
 import com.ecommerce.shop.models.DTO.product.ProductShoppingCartDTO;
+
 import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCartStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -31,6 +33,8 @@ public class ShoppingCartDTO {
     @NotBlank
     @Pattern(regexp = "^[A-Za-z0-9_-]{21}$", message = "shoppingCartId inválido")
     private String shoppingCartId;
+
+    private UserBuyerDTO user;
 
     @Builder.Default
     private ShoppingCartStatus status = ShoppingCartStatus.ACTIVE;

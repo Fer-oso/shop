@@ -1,9 +1,14 @@
 package com.ecommerce.shop.models.entitys.orders;
 
+import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -35,7 +40,9 @@ public class Order {
 
     private String status;
 
-    private String shoppingCartId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shopping_cart_id", nullable = false)
+    private ShoppingCart shoppingCart;
 
     private Integer total;
 }

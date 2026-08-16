@@ -2,7 +2,6 @@ package com.ecommerce.shop.services.sales.buyer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,22 +38,23 @@ public class BuyerServiceImp implements IBuyerService {
     @Override
     public BuyerDTO save(BuyerDTO buyerDTO) {
 
-        return Optional.of(buyerDTO).map(dto -> {
+        if (buyerDTO == null) {
+            throw new IllegalArgumentException("Buyer cant be null");
+        }
 
-            User user = userService.findEntityById(dto.getUser().getId());
+        User user = userService.findEntityById(buyerDTO.getUser().getId());
 
-            Buyer buyer = buyerMapper.mapDTOToEntity(dto);
+        Buyer buyer = buyerMapper.mapDTOToEntity(buyerDTO);
 
-            if (buyer.getShoppingCarts() == null) {
+        if (buyer.getShoppingCarts() == null) {
 
-                buyer.setShoppingCarts(new ArrayList<ShoppingCart>());
-            }
+            buyer.setShoppingCarts(new ArrayList<ShoppingCart>());
+        }
 
-            buyer.setUser(user);
+        buyer.setUser(user);
 
-            return buyerMapper.mapEntityToDTO(buyerRepository.save(buyer));
+        return buyerMapper.mapEntityToDTO(buyerRepository.save(buyer));
 
-        }).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
     };
 
     @Override
@@ -94,18 +94,25 @@ public class BuyerServiceImp implements IBuyerService {
     }
 
     @Override
-    public Buyer saveAndGetEntity(BuyerDTO buyerDTO) {
-        User user = userMapper.mapDTOToEntity(userService.findById(buyerDTO.getUser().getId()));
+    public Buyer saveEntity(BuyerDTO buyerDTO) {
 
         Buyer buyer = buyerMapper.mapDTOToEntity(buyerDTO);
 
-        buyer.setUser(user);
-
-        if (buyer.getShoppingCarts() == null) {
-
-            buyer.setShoppingCarts(new ArrayList<ShoppingCart>());
-        }
+        buyer.setUser(userService.findEntityById(buyerDTO.getUser().getId()));
 
         return buyerRepository.save(buyer);
     }
+
+    @Override
+    public Buyer updateEntity(BuyerDTO buyerDTO) {
+        return buyerRepository.findById(buyerDTO.getId()).map(buyer -> {
+
+            buyer.setUser(userService.findEntityById(buyerDTO.getUser().getId()));
+
+            return buyerRepository.save(buyer);
+        }
+
+        ).orElseThrow(() -> new EntityNotFoundException("Buyer not found"));
+    };
+
 }

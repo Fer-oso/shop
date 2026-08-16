@@ -22,6 +22,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ecommerce.shop.configurations.jwt.utils.JwtUtils;
 import com.ecommerce.shop.controllers.responsesModels.ResponseSuccessModel;
 import com.ecommerce.shop.models.DTO.users.CredentialsUser;
+import com.ecommerce.shop.models.DTO.users.UserLoginResponseDTO;
 import com.ecommerce.shop.services.login.ILoginService;
 
 import jakarta.servlet.http.Cookie;
@@ -42,13 +43,14 @@ public class AuthController {
         }
 
         @PostMapping("/login")
-        public ResponseEntity<ResponseSuccessModel> login(@RequestBody CredentialsUser credentialsUser,
+        public ResponseEntity<ResponseSuccessModel<UserLoginResponseDTO>> login(
+                        @RequestBody CredentialsUser credentialsUser,
                         HttpServletResponse response) {
 
                 var loginResponse = loginService.loginWithUsernameAndPassword(credentialsUser);
 
                 ResponseCookie cookie = ResponseCookie
-                                .from("refresToken", loginResponse.getRefreshToken())
+                                .from("refreshToken", loginResponse.getRefreshToken())
                                 .httpOnly(true)
                                 .secure(false)
                                 .path("/api/shop/auth/refresh")
@@ -57,12 +59,11 @@ public class AuthController {
                                 .build();
 
                 response.addHeader("Set-Cookie", cookie.toString());
-                response.addHeader(null, null);
 
                 response.setStatus(200);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                                ResponseSuccessModel.builder()
+                                ResponseSuccessModel.<UserLoginResponseDTO>builder()
                                                 .status("OK")
                                                 .code(200)
                                                 .response(loginResponse)

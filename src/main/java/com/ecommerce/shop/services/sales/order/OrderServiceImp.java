@@ -1,7 +1,5 @@
 package com.ecommerce.shop.services.sales.order;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.shop.models.DTO.shoppingcart.OrderDTO;
@@ -26,15 +24,11 @@ public class OrderServiceImp implements IOrderService {
     @Override
     public OrderDTO save(OrderDTO orderDTO) {
 
-        return Optional.of(orderDTO).map(dto -> {
+        Order order = orderMapper.mapDTOToEntity(orderDTO);
 
-            Order order = orderMapper.mapDTOToEntity(dto);
+        order.setOrderNumber("ORD-" + Math.round(Math.random() * 1000000));
 
-            order.setOrderNumber("ORD-" + Math.round(Math.random() * 1000000));
-
-            return orderMapper.mapEntityToDTO(orderRepository.save(order));
-
-        }).orElseThrow(() -> new RuntimeException("Error al guardar la orden"));
+        return orderMapper.mapEntityToDTO(orderRepository.save(order));
 
     }
 

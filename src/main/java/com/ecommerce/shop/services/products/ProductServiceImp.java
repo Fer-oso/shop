@@ -1,7 +1,6 @@
 package com.ecommerce.shop.services.products;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import com.ecommerce.shop.repository.products.ProductRepository;
 
 import com.ecommerce.shop.services.category.ICategoryService;
 import com.ecommerce.shop.services.images.IImageService;
+import com.ecommerce.shop.services.images.exceptions.ImageNotFoundException;
 import com.ecommerce.shop.services.products.exceptions.ProductsNotFoundException;
 import com.ecommerce.shop.services.products.exceptions.ProductNotFoundException;
 
@@ -45,23 +45,22 @@ public class ProductServiceImp implements IProductService<ProductDTO> {
     @Override
     public ProductDTO save(ProductDTO productDTO, List<MultipartFile> filesImage) {
 
-        return Optional.of(productDTO).map(dto -> {
+        if (productDTO == null) {
+            throw new IllegalArgumentException("Product can't be null");
+        }
 
-            Product product = productMapper.mapDTOToEntity(dto);
+        Product product = productMapper.mapDTOToEntity(productDTO);
 
-            Category category = categoryService.findCategoryByName(dto.getCategory().getName());
+        Category category = categoryService.findCategoryByName(productDTO.getCategory().getName());
 
-            List<Image> images = imageService.saveImage(filesImage);
+        product.setCategory(category);
 
-            product.setCategory(category);
+        List<Image> images = imageService.saveImage(filesImage);
 
-            product.setWeight(120);
+        product.setImages(images);
 
-            product.setImages(images);
+        return productMapper.mapEntityToDTO(productRepository.save(product));
 
-            return productMapper.mapEntityToDTO(productRepository.save(product));
-
-        }).orElseThrow(() -> new NullPointerException("Product cant be null properties"));
     }
 
     @Override
@@ -70,9 +69,7 @@ public class ProductServiceImp implements IProductService<ProductDTO> {
         return productRepository.findById(productId)
                 .map(product -> {
 
-                    System.out.println(product);
-
-                    product = productMapper.mapDTOToEntity(productDTO);
+                    productMapper.updateEntityFromDTO(productDTO, product);
 
                     if (productDTO.getCategory() != null) {
 
@@ -81,14 +78,10 @@ public class ProductServiceImp implements IProductService<ProductDTO> {
                         product.setCategory(category);
                     }
 
-                    if (productDTO.getImages() == null) {
-
-                        product.setImages(productRepository.findById(productId).get().getImages());
+                    if (filesImage != null && !filesImage.isEmpty()) {
+                        List<Image> newImages = imageService.saveImage(filesImage);
+                        product.getImages().addAll(newImages);
                     }
-
-                    List<Image> images = imageService.saveImage(filesImage);
-
-                    product.getImages().addAll(images);
 
                     return productMapper.mapEntityToDTO(productRepository.save(product));
                 })
@@ -211,6 +204,28 @@ public class ProductServiceImp implements IProductService<ProductDTO> {
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countProductsByBrandAndName(brand, name);
+    }
+
+    @Override
+    public Product findEntityById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with that id: " + id));
+    }
+
+    public void removeImage(Long productId, Long imageId) {
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
+
+        Image image = product.getImages().stream()
+                .filter(img -> img.getId() == imageId)
+                .findFirst()
+                .orElseThrow(
+                        () -> new ImageNotFoundException("Image not found with id: " + imageId + " for this product"));
+
+        product.getImages().remove(image);
+        productRepository.save(product); // orphanRemoval borra la fila de Image y la de product_image
+
     }
 
 }

@@ -2,12 +2,10 @@ package com.ecommerce.shop.models.entitys.buyer;
 
 import java.util.List;
 
-import com.ecommerce.shop.models.entitys.phone.Phone;
 import com.ecommerce.shop.models.entitys.shoppingcart.ShoppingCart;
 import com.ecommerce.shop.models.entitys.user.User;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -53,8 +51,7 @@ public class Buyer {
     @Column(length = 255)
     private String address;
 
-    @Embedded // o @OneToOne, según cómo esté definida tu clase Phone
-    private Phone phone;
+    private String phone;
 
     @OneToMany(mappedBy = "buyer")
     private List<ShoppingCart> shoppingCarts;
